@@ -1,16 +1,32 @@
 state("Worms W.M.D") {
-	string20 ExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
-	string20 BonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
+	string21 SelectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
+	string19 SelectedExtraMission :     "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
+	string17 SelectedBonusMission :     "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
 
 	bool MenuOrPaused : "Worms W.M.D.exe", 0x1036752;
 }
 
 startup {
+	settings.Add("challenge_missions", true, "Challenge Missions");
+	settings.CurrentDefaultParent = "challenge_missions";
+	settings.Add("FE.Header.Challenge01", true, "Jetpack to Work!");
+	settings.Add("FE.Header.Challenge02", true, "I'm gonna Mech you Mine");
+	settings.Add("FE.Header.Challenge03", true, "Don't be Greedy!");
+	settings.Add("FE.Header.Challenge04", true, "Assault and Battery");
+	settings.Add("FE.Header.Challenge05", true, "Sharpshooter");
+	settings.Add("FE.Header.Challenge06", true, "Blast Off!");
+	settings.Add("FE.Header.Challenge07", true, "Batter Up!");
+	settings.Add("FE.Header.Challenge08", true, "Mi Pun Chu");
+	settings.Add("FE.Header.Challenge09", true, "Tanked Up");
+	settings.Add("FE.Header.Challenge10", true, "Ice Spy");
+
+	settings.CurrentDefaultParent = null;
+
 	settings.Add("extra_missions", true, "Extra Missions");
 	settings.CurrentDefaultParent = "extra_missions";
 	settings.Add("FE.Header.Carentan1", true, "War of the Worms");
 	settings.Add("FE.Header.Carentan2", true, "Downfall");
-	settings.Add("FE.Header.Carentan3", true, "Chateau de Gateau");
+	settings.Add("FE.Header.Carentan3", true, "Château de Gâteau");
 	settings.Add("FE.Header.Carentan4", true, "Grieving Private Survivor");
 	settings.Add("FE.Header.Carentan5", true, "Final Fury");
 
@@ -28,34 +44,36 @@ startup {
 }
 
 start {
-	if (current.ExtraMission.ToString() == "FE.Header.Carentan1" && !current.MenuOrPaused) {
-		print(current.ExtraMission.ToString());
-		print(current.MenuOrPaused.ToString());
-		
+	if (current.SelectedChallengeMission.ToString() == "FE.Header.Challenge01" && !current.MenuOrPaused) {
+		print(current.SelectedChallengeMission.ToString());		
+		return settings["FE.Header.Challenge01"];
+	}
+
+	if (current.SelectedExtraMission.ToString() == "FE.Header.Carentan1" && !current.MenuOrPaused) {
+		print(current.SelectedExtraMission.ToString());		
 		return settings["FE.Header.Carentan1"];
 	}
 
-	if (current.BonusMission.ToString() == "FE.Header.Bonus01" && !current.MenuOrPaused) {
-		print(current.BonusMission.ToString());
-		print(current.MenuOrPaused.ToString());
-		
+	if (current.SelectedBonusMission.ToString() == "FE.Header.Bonus01" && !current.MenuOrPaused) {
+		print(current.SelectedBonusMission.ToString());		
 		return settings["FE.Header.Bonus01"];
 	}
 }
 
 split {
-	if (current.ExtraMission.ToString() != old.ExtraMission.ToString()) {
-		print(current.ExtraMission.ToString());
-		print(current.MenuOrPaused.ToString());
-
-		return settings[current.ExtraMission.ToString()];
+	if (current.SelectedChallengeMission.ToString() != old.SelectedChallengeMission.ToString()) {
+		print(current.SelectedChallengeMission.ToString());
+		return settings[current.SelectedChallengeMission.ToString()];
 	}
 
-	if (current.BonusMission.ToString() != old.BonusMission.ToString()) {
-		print(current.BonusMission.ToString());
-		print(current.MenuOrPaused.ToString());
+	if (current.SelectedExtraMission.ToString() != old.SelectedExtraMission.ToString()) {
+		print(current.SelectedExtraMission.ToString());
+		return settings[current.SelectedExtraMission.ToString()];
+	}
 
-		return settings[current.BonusMission.ToString()];
+	if (current.SelectedBonusMission.ToString() != old.SelectedBonusMission.ToString()) {
+		print(current.SelectedBonusMission.ToString());
+		return settings[current.SelectedBonusMission.ToString()];
 	}
 }
 
