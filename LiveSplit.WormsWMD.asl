@@ -11,7 +11,9 @@ state("Worms W.M.D") {
 startup {
     // Add challenge missions to the settings (Edit Layout > Scriptable Autosplitter)
     settings.Add("challenge_missions", true, "Challenge Missions");
+
     settings.CurrentDefaultParent = "challenge_missions";
+	
     settings.Add("FE.Header.Challenge01", true, "Jetpack to Work!");
     settings.Add("FE.Header.Challenge02", true, "I'm gonna Mech you Mine");
     settings.Add("FE.Header.Challenge03", true, "Don't be Greedy!");
@@ -25,7 +27,9 @@ startup {
 
     // Add extra missions to the settings (Edit Layout > Scriptable Autosplitter)
     settings.CurrentDefaultParent = null;
+
     settings.Add("extra_missions", true, "Extra Missions");
+
     settings.Add("FE.Header.Carentan1", true, "War of the Worms");
     settings.Add("FE.Header.Carentan2", true, "Downfall");
     settings.Add("FE.Header.Carentan3", true, "Château de Gâteau");
@@ -34,7 +38,9 @@ startup {
 
     // Add bonus missions to the settings (Edit Layout > Scriptable Autosplitter)
     settings.CurrentDefaultParent = null;
+
     settings.Add("bonus_missions", true, "Bonus Missions");
+
     settings.Add("FE.Header.Bonus01", true, "Cool As Ice");
     settings.Add("FE.Header.Bonus02", true, "Operation Alcatraz");
     settings.Add("FE.Header.Bonus03", true, "Steeple Jack");
