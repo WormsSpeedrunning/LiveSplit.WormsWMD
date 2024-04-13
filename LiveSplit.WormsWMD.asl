@@ -51,27 +51,37 @@ startup {
 
 start {
     if (!current.MenuOrPaused) {
-        if (current.SelectedChallengeMission.ToString() == "FE.Header.Challenge01") {
-            // Selected challenge mission is the first mission and the game is not paused
-            print(current.SelectedChallengeMission.ToString());        
-            return settings["FE.Header.Challenge01"];
-        }
-
-        if (current.SelectedExtraMission.ToString() == "FE.Header.Carentan1") {
-            // Selected extra mission is the first mission and the game is not paused
-            print(current.SelectedExtraMission.ToString());        
-            return settings["FE.Header.Carentan1"];
-        }
-
         if (current.SelectedBonusMission.ToString() == "FE.Header.Bonus01") {
             // Selected bonus mission is the first mission and the game is not paused
             print(current.SelectedBonusMission.ToString());        
             return settings["FE.Header.Bonus01"];
         }
     }
+
+    if (!current.MenuOrPaused) {
+        if (current.SelectedChallengeMission.ToString() == "FE.Header.Challenge01") {
+            // Selected challenge mission is the first mission and the game is not paused
+            print(current.SelectedChallengeMission.ToString());        
+            return settings["FE.Header.Challenge01"];
+        }
+    }
+
+    if (!current.MenuOrPaused) {
+        if (current.SelectedExtraMission.ToString() == "FE.Header.Carentan1") {
+            // Selected extra mission is the first mission and the game is not paused
+            print(current.SelectedExtraMission.ToString());        
+            return settings["FE.Header.Carentan1"];
+        }
+    }
 }
 
 split {
+    // If the selected bonus mission changed, split
+    if (current.SelectedBonusMission.ToString() != old.SelectedBonusMission.ToString()) {
+        print(current.SelectedBonusMission.ToString());
+        return settings[current.SelectedBonusMission.ToString()];
+    }
+
     // If the selected challenge mission changed, split
     if (current.SelectedChallengeMission.ToString() != old.SelectedChallengeMission.ToString()) {
         print(current.SelectedChallengeMission.ToString());
@@ -82,12 +92,6 @@ split {
     if (current.SelectedExtraMission.ToString() != old.SelectedExtraMission.ToString()) {
         print(current.SelectedExtraMission.ToString());
         return settings[current.SelectedExtraMission.ToString()];
-    }
-
-    // If the selected bonus mission changed, split
-    if (current.SelectedBonusMission.ToString() != old.SelectedBonusMission.ToString()) {
-        print(current.SelectedBonusMission.ToString());
-        return settings[current.SelectedBonusMission.ToString()];
     }
 }
 
