@@ -29,11 +29,11 @@ The layout and splits files are somewhat personal and meant to be created from s
 - [x] Add support for Bonus Missions
 - [x] Add support for Extra Missions
 - [x] Add support for Challenge Missions
+- [ ] Fix bug: on enmy turn the timer stops
 - [ ] Add support for Campaign Missions
 - [ ] Add support for Training Missions
 - [ ] Split only after in game rather than immidiately when the level loads
 - [ ] Fix problem when exiting a mission timer keeps going for a little and then stops again
-- [ ] Fix bug: on enmy turn the timer stops
 
 
 ## Development
