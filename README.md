@@ -31,6 +31,7 @@ The layout and splits files are somewhat personal and meant to be created from s
 - [ ] Add support for Campaign Missions
 - [ ] Add support for Training Missions
 - [ ] Split only after in game rather than immidiately when the level loads
+- [ ] Fix problem when exiting a mission timer keeps going for a little and then stops again
 
 
 ## Development
