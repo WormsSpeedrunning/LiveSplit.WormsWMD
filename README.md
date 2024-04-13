@@ -21,8 +21,9 @@ The layout and splits files are somewhat personal and meant to be created from s
   7. `Control > Scriptable Auto Splitter`
   8. Double click on the `Scriptable Auto Splitter` component
   9. Click browse and select the `.asl` file from the extracted folder (step 2)
-  10. Create or download the splits (`Right click on the timer > Edit Splits`), You can also copy and paste the levels from [here](https://docs.google.com/spreadsheets/d/1wLOU4FbLXlK7e3cd_i5Iwp5cv3UWQyyUSuk-VmZqfHk/edit?usp=sharing)
-  11. Done. You should now be able to open up a level and the timer should automatically start
+  10. Select the missions you want
+  11. Create or download the splits (`Right click on the timer > Edit Splits`), You can also copy and paste the levels from [here](https://docs.google.com/spreadsheets/d/1wLOU4FbLXlK7e3cd_i5Iwp5cv3UWQyyUSuk-VmZqfHk/edit?usp=sharing)
+  12. Done. You should now be able to open up a level and the timer should automatically start
 
 ### TODO:
 - [x] Add support for Bonus Missions
