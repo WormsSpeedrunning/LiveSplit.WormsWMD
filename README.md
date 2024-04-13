@@ -24,6 +24,15 @@ The layout and splits files are somewhat personal and meant to be created from s
   10. Create or download the splits (`Right click on the timer > Edit Splits`)
   11. Done. You should now be able to open up a level and the timer should automatically start
 
+### TODO:
+- [x] Add support for Bonus Missions
+- [x] Add support for Extra Missions
+- [x] Add support for Challenge Missions
+- [ ] Add support for Campaign Missions
+- [ ] Add support for Training Missions
+- [ ] Split only after in game rather than immidiately when the level loads
+
+
 ## Development
 
 ### Import
