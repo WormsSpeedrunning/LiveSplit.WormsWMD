@@ -1,5 +1,5 @@
 # LiveSplit.WormsWMD
-Worms WMD autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
+Worms W.M.D autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
 
 ## First Usage
 
@@ -11,17 +11,30 @@ The layout and splits files are somewhat personal and meant to be created from s
  - .lsl file (LiveSplit layout): your preferred layout
     - import from a URL
 
+## Installation
+  1. Go to the [releases](https://github.com/stephanebruckert/LiveSplit.WormsWMD/releases/) page and download the `Worms-WMD-Autosplitter.zip` from the latest release
+  2. Extract the archive into your desired location
+  3. Open up [LiveSplit](https://livesplit.org/)
+  4. Right click on the timer
+  5. Click on `Edit Layout`
+  6. Click on the `+` icon
+  7. `Control > Scriptable Auto Splitter`
+  8. Double click on the `Scriptable Auto Splitter` component
+  9. Click browse and select the `.asl` file from the extracted folder (step 2)
+  10. Create or download the splits (`Right click on the timer > Edit Splits`)
+  11. Done. You should now be able to open up a level and the timer should automatically start
+
 ## Development
 
 ### Import
 
-Can be manually imported via the `Scriptable Auto Splitter` component on your layout.
+Can be manually imported via the `Scriptable Auto Splitter` component on your layout. (look [Installation](#installation))
 
 ### Changes
 
-Main doc: https://github.com/LiveSplit/LiveSplit.AutoSplitters/
+Main doc for auto splitters: https://github.com/LiveSplit/LiveSplit.AutoSplitters/
 
-To apply changes to the script just save it, there is no need to re-run the game or LiveSplit.
+To apply changes to the script just edit the script and save it, there is no need to re-run the game or LiveSplit.
 
 ### Memory values
 
