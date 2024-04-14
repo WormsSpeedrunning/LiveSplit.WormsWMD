@@ -4,11 +4,11 @@ state("Worms W.M.D") {
     string19 SelectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
     string17 SelectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
     
-    // Variable to check if the game is paused
+    // Is the game paused or not
     bool MenuOrPaused : "Worms W.M.D.exe", 0x1036752;
 
-    // TODO: IMPLEMENT A VARIABLE FOR THE IN GAME TIMER
-    // EG. string5 ig_timer : "Worms W.M.D.exe", offsets
+    // TODO: Is the in game timer stopped or not (Cheat Engine Search: type is byte, 1 if timer moving, 0 if not)
+    // bool IgTimerRunning : "Worms W.M.D.exe", offsets;
 }
 
 startup {
@@ -53,29 +53,32 @@ startup {
 }
 
 start {
-    // TODO: Instead of starting the timer when the bool changes, Start the timer when ig_timer changes the first time
+    // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
     //       This will prevent the timer from starting before the player can move.
 
-    if (!current.MenuOrPaused) {
+    if (!current.MenuOrPaused) { // && current.IgTimerRunning
         if (current.SelectedBonusMission.ToString() == "FE.Header.Bonus01") {
             // Selected bonus mission is the first mission and the game is not paused
-            print(current.SelectedBonusMission.ToString());        
+            print(current.SelectedBonusMission.ToString());
+
             return settings["FE.Header.Bonus01"];
         }
     }
 
-    if (!current.MenuOrPaused) {
+    if (!current.MenuOrPaused) { // && current.IgTimerRunning
         if (current.SelectedChallengeMission.ToString() == "FE.Header.Challenge01") {
             // Selected challenge mission is the first mission and the game is not paused
-            print(current.SelectedChallengeMission.ToString());        
+            print(current.SelectedChallengeMission.ToString()); 
+
             return settings["FE.Header.Challenge01"];
         }
     }
 
-    if (!current.MenuOrPaused) {
+    if (!current.MenuOrPaused) { // && current.IgTimerRunning
         if (current.SelectedExtraMission.ToString() == "FE.Header.Carentan1") {
             // Selected extra mission is the first mission and the game is not paused
-            print(current.SelectedExtraMission.ToString());        
+            print(current.SelectedExtraMission.ToString());  
+
             return settings["FE.Header.Carentan1"];
         }
     }
@@ -85,24 +88,31 @@ split {
     // If the selected bonus mission changed, split
     if (current.SelectedBonusMission.ToString() != old.SelectedBonusMission.ToString()) {
         print(current.SelectedBonusMission.ToString());
+
         return settings[current.SelectedBonusMission.ToString()];
     }
 
     // If the selected challenge mission changed, split
     if (current.SelectedChallengeMission.ToString() != old.SelectedChallengeMission.ToString()) {
         print(current.SelectedChallengeMission.ToString());
+
         return settings[current.SelectedChallengeMission.ToString()];
     }
 
     // If the selected extra mission changed, split
     if (current.SelectedExtraMission.ToString() != old.SelectedExtraMission.ToString()) {
         print(current.SelectedExtraMission.ToString());
+        
         return settings[current.SelectedExtraMission.ToString()];
     }
 }
 
 isLoading {
-    // Return true if the game is paused or in the menu
     // TODO: FIX THIS! This will return true when it's the enemy's turn. NOT WHAT WE WANT!
+
+    // The code bellow should work once IgTimerRunning is defined 
+    // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
+
+    // Return true if the game is paused or in the menu
     return current.MenuOrPaused;
 }
