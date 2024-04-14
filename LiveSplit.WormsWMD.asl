@@ -6,6 +6,9 @@ state("Worms W.M.D") {
     
     // Variable to check if the game is paused
     bool MenuOrPaused : "Worms W.M.D.exe", 0x1036752;
+
+    // TODO: IMPLEMENT A VARIABLE FOR THE IN GAME TIMER
+    // EG. string5 ig_timer : "Worms W.M.D.exe", offsets
 }
 
 startup {
@@ -50,6 +53,9 @@ startup {
 }
 
 start {
+    // TODO: Instead of starting the timer when the bool changes, Start the timer when ig_timer changes the first time
+    //       This will prevent the timer from starting before the player can move.
+
     if (!current.MenuOrPaused) {
         if (current.SelectedBonusMission.ToString() == "FE.Header.Bonus01") {
             // Selected bonus mission is the first mission and the game is not paused
@@ -97,5 +103,6 @@ split {
 
 isLoading {
     // Return true if the game is paused or in the menu
+    // TODO: FIX THIS! This will return true when it's the enemy's turn. NOT WHAT WE WANT!
     return current.MenuOrPaused;
 }
