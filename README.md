@@ -1,6 +1,8 @@
 # LiveSplit.WormsWMD
 Worms W.M.D autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
 
+### NOT PRODUCTION READY HAS MAJOR BUGS!
+
 ## First Usage
 
 This script is automatically detected by LiveSplit as part of https://github.com/LiveSplit/LiveSplit.AutoSplitters/blob/master/LiveSplit.AutoSplitters.xml
