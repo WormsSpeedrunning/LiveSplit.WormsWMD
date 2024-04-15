@@ -28,8 +28,10 @@ The layout and splits files are somewhat personal and meant to be created from s
   12. Done. You should now be able to open up a level and the timer should automatically start
 
 ### TODO:
-- [ ] Fix bug: on enmy turn the timer stops
-- [ ] Split only after in game rather than immidiately when the level loads
+- [ ] Add Support for Basic, Pro and Basic+Pro training missions
+- [ ] Fix bug: on enemy turn the timer stops
+- [ ] Fix bug: when weapons selected the timer stops
+- [ ] Split only after in game rather than immediately when the level loads
 - [ ] Fix problem when exiting a mission timer keeps going for a little and then stops again
 
 
