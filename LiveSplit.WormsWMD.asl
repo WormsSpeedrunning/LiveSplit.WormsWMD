@@ -1,5 +1,6 @@
 // Define the executable and variables
 state("Worms W.M.D") {
+    string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
     string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
     string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
     string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
@@ -12,6 +13,42 @@ state("Worms W.M.D") {
 }
 
 startup {
+    // Add campaign missions to the settings (Edit Layout > Scriptable Autosplitter)
+    settings.Add("campaign_missions", true, "Campaign Missions");
+
+    settings.CurrentDefaultParent = "challenge_missions";
+    settings.Add("FE.Header.Campaign", true, "Church and Destroy");
+    settings.Add("FE.Header.Campaign", true, "Building for Protection");
+    settings.Add("FE.Header.Campaign", true, "Tanks for the Memories");
+    settings.Add("FE.Header.Campaign", true, "Chopper Suey");
+    settings.Add("FE.Header.Campaign", true, "Crème de la Kremlin");
+    settings.Add("FE.Header.Campaign", true, "Tijuana Dance With Me?");
+    settings.Add("FE.Header.Campaign", true, "Russian to the Crate");
+    settings.Add("FE.Header.Campaign", true, "The States of Play");
+    settings.Add("FE.Header.Campaign", true, "When Will I Siege You Again?");
+    settings.Add("FE.Header.Campaign", true, "Rumble in the Jungle");
+    settings.Add("FE.Header.Campaign", true, "Koo and the Gang");
+    settings.Add("FE.Header.Campaign", true, "Temple Troubles");
+    settings.Add("FE.Header.Campaign", true, "Juan Shot, Juan Kill");
+    settings.Add("FE.Header.Campaign", true, "Fur the Win");
+    settings.Add("FE.Header.Campaign", true, "The Banks of England");
+    settings.Add("FE.Header.Campaign", true, "Don’t Believe the Snype");
+    settings.Add("FE.Header.Campaign", true, "Keep Your Chinook");
+    settings.Add("FE.Header.Campaign", true, "Enemy At the Crates");
+    settings.Add("FE.Header.Campaign", true, "We’re Foo Yung To Die");
+    settings.Add("FE.Header.Campaign", true, "Mount-A-Strike");
+    settings.Add("FE.Header.Campaign", true, "Reach for the Tsars");
+    settings.Add("FE.Header.Campaign", true, "Stormtroupers");
+    settings.Add("FE.Header.Campaign", true, "The Crate Wall");
+    settings.Add("FE.Header.Campaign", true, "Chip Chopper Disaster");
+    settings.Add("FE.Header.Campaign", true, "You Got the Hanger This");
+    settings.Add("FE.Header.Campaign", true, "Blockbuster");
+    settings.Add("FE.Header.Campaign", true, "It’s Nacho’s Fault");
+    settings.Add("FE.Header.Campaign", true, "The Legend of Ro Ping ");
+    settings.Add("FE.Header.Campaign", true, "Crafty Cavern Capers");
+    settings.Add("FE.Header.Campaign", true, "Tsarface");
+    settings.CurrentDefaultParent = null;
+
     // Add challenge missions to the settings (Edit Layout > Scriptable Autosplitter)
     settings.Add("challenge_missions", true, "Challenge Missions");
 
@@ -68,7 +105,8 @@ init {
 }
 
 split {
-    if (current.selectedChallengeMission != old.selectedChallengeMission
+    if (current.selectedCampaignMission != old.selectedCampaignMission
+        || current.selectedChallengeMission != old.selectedChallengeMission
         || current.selectedExtraMission != old.selectedExtraMission
         || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
