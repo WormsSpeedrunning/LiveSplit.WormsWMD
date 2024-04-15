@@ -61,27 +61,21 @@ start {
 }
 
 split {
-    // If the selected bonus mission changed, split
-    if (current.SelectedBonusMission.ToString() != old.SelectedBonusMission.ToString()) {
+    // Check if any mission selection has changed
+    if (current.SelectedBonusMission != old.SelectedBonusMission) {
         print(current.SelectedBonusMission.ToString());
-
         return settings[current.SelectedBonusMission.ToString()];
-    }
 
-    // If the selected challenge mission changed, split
-    if (current.SelectedChallengeMission.ToString() != old.SelectedChallengeMission.ToString()) {
+    } else if (current.SelectedChallengeMission != old.SelectedChallengeMission) {
         print(current.SelectedChallengeMission.ToString());
-
         return settings[current.SelectedChallengeMission.ToString()];
-    }
-
-    // If the selected extra mission changed, split
-    if (current.SelectedExtraMission.ToString() != old.SelectedExtraMission.ToString()) {
-        print(current.SelectedExtraMission.ToString());
         
+    } else if (current.SelectedExtraMission != old.SelectedExtraMission) {
+        print(current.SelectedExtraMission.ToString());
         return settings[current.SelectedExtraMission.ToString()];
     }
 }
+
 
 isLoading {
     // TODO: FIX THIS! This will return true when it's the enemy's turn. NOT WHAT WE WANT!
