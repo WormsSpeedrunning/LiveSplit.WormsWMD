@@ -1,5 +1,6 @@
 // Define the executable and variables
 state("Worms W.M.D") {
+    string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
     string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
     string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
     string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
@@ -13,40 +14,72 @@ state("Worms W.M.D") {
 }
 
 startup {
+    // Add training missions to the settings (Edit Layout > Scriptable Autosplitter)
+    settings.Add("training_missions", true, "Training Missions");
+
+    settings.CurrentDefaultParent = "training_missions";
+    settings.Add("basic_training_missions", true, "Basic Training Missions");
+    settings.Add("pro_training_missions", true, "Pro Training Missions");
+
+    settings.CurrentDefaultParent = "basic_training_missions";
+    settings.Add("FE.Header.NavigationTraining", true, "Navigation");
+    settings.Add("FE.Header.BazookaBasicTraining", true, "Bazooka");
+    settings.Add("FE.Header.StaticGunBasic", true, "Gun Turret");
+    settings.Add("FE.Header.GrenadeBasicTraining", true, "Grenade");
+    settings.Add("FE.Header.TankTraining", true, "Tank");
+    settings.Add("FE.Header.ShotgunBasicTraining", true, "Shotgun");
+    settings.Add("FE.Header.MechTraining", true, "Mech");
+    settings.Add("FE.Header.Airstrike Training", true, "Airstrike");
+    settings.Add("FE.Header.HelicopterTraining", true, "Helicopter");
+    settings.Add("FE.Header.SheepTraining", true, "Sheep");
+
+    settings.CurrentDefaultParent = "pro_training_missions";
+    settings.Add("FE.Header.BazookaAdvancedTraining", true, "Pro: Bazooka");
+    settings.Add("FE.Header.ParachuteTraining", true, "Pro: Parachute");
+    settings.Add("FE.Header.StaticGunAdvanced", true, "Pro: Gun Turret");
+    settings.Add("FE.Header.JetPackTraining", true, "Pro: Jet Pack");
+    settings.Add("FE.Header.GrenadeAdvancedTraining", true, "Pro: Grenade");
+    settings.Add("FE.Header.HomingMissileTraining", true, "Pro: Homing Missile");
+    settings.Add("FE.Header.SuperSheepTraining", true, "Pro: Super Sheep");
+    settings.Add("FE.Header.SheepRopeTraining", true, "Pro: Sheep-On-A-Rope");
+    settings.Add("FE.Header.HHGTraining", true, "Pro: Holy Hand Grenade");
+    settings.Add("FE.Header.NinjaRopeTraining", true, "Pro: Ninja Rope");
+    settings.CurrentDefaultParent = null;
+
     // Add campaign missions to the settings (Edit Layout > Scriptable Autosplitter)
     settings.Add("campaign_missions", true, "Campaign Missions");
 
-    settings.CurrentDefaultParent = "challenge_missions";
-    settings.Add("FE.Header.Campaign", true, "Church and Destroy");
-    settings.Add("FE.Header.Campaign", true, "Building for Protection");
-    settings.Add("FE.Header.Campaign", true, "Tanks for the Memories");
-    settings.Add("FE.Header.Campaign", true, "Chopper Suey");
-    settings.Add("FE.Header.Campaign", true, "Crème de la Kremlin");
-    settings.Add("FE.Header.Campaign", true, "Tijuana Dance With Me?");
-    settings.Add("FE.Header.Campaign", true, "Russian to the Crate");
-    settings.Add("FE.Header.Campaign", true, "The States of Play");
-    settings.Add("FE.Header.Campaign", true, "When Will I Siege You Again?");
-    settings.Add("FE.Header.Campaign", true, "Rumble in the Jungle");
-    settings.Add("FE.Header.Campaign", true, "Koo and the Gang");
-    settings.Add("FE.Header.Campaign", true, "Temple Troubles");
-    settings.Add("FE.Header.Campaign", true, "Juan Shot, Juan Kill");
-    settings.Add("FE.Header.Campaign", true, "Fur the Win");
-    settings.Add("FE.Header.Campaign", true, "The Banks of England");
-    settings.Add("FE.Header.Campaign", true, "Don’t Believe the Snype");
-    settings.Add("FE.Header.Campaign", true, "Keep Your Chinook");
-    settings.Add("FE.Header.Campaign", true, "Enemy At the Crates");
-    settings.Add("FE.Header.Campaign", true, "We’re Foo Yung To Die");
-    settings.Add("FE.Header.Campaign", true, "Mount-A-Strike");
-    settings.Add("FE.Header.Campaign", true, "Reach for the Tsars");
-    settings.Add("FE.Header.Campaign", true, "Stormtroupers");
-    settings.Add("FE.Header.Campaign", true, "The Crate Wall");
-    settings.Add("FE.Header.Campaign", true, "Chip Chopper Disaster");
-    settings.Add("FE.Header.Campaign", true, "You Got the Hanger This");
-    settings.Add("FE.Header.Campaign", true, "Blockbuster");
-    settings.Add("FE.Header.Campaign", true, "It’s Nacho’s Fault");
-    settings.Add("FE.Header.Campaign", true, "The Legend of Ro Ping ");
-    settings.Add("FE.Header.Campaign", true, "Crafty Cavern Capers");
-    settings.Add("FE.Header.Campaign", true, "Tsarface");
+    settings.CurrentDefaultParent = "campaign_missions";
+    settings.Add("FE.Header.Campaign1", true, "Church and Destroy");
+    settings.Add("FE.Header.Campaign2", true, "Building for Protection");
+    settings.Add("FE.Header.Campaign3", true, "Tanks for the Memories");
+    settings.Add("FE.Header.Campaign4", true, "Chopper Suey");
+    settings.Add("FE.Header.Campaign5", true, "Crème de la Kremlin");
+    settings.Add("FE.Header.Campaign6", true, "Tijuana Dance With Me?");
+    settings.Add("FE.Header.Campaign7", true, "Russian to the Crate");
+    settings.Add("FE.Header.Campaign8", true, "The States of Play");
+    settings.Add("FE.Header.Campaign9", true, "When Will I Siege You Again?");
+    settings.Add("FE.Header.Campaign10", true, "Rumble in the Jungle");
+    settings.Add("FE.Header.Campaign11", true, "Koo and the Gang");
+    settings.Add("FE.Header.Campaign12", true, "Temple Troubles");
+    settings.Add("FE.Header.Campaign13", true, "Juan Shot, Juan Kill");
+    settings.Add("FE.Header.Campaign14", true, "Fur the Win");
+    settings.Add("FE.Header.Campaign15", true, "The Banks of England");
+    settings.Add("FE.Header.Campaign16", true, "Don’t Believe the Snype");
+    settings.Add("FE.Header.Campaign17", true, "Keep Your Chinook");
+    settings.Add("FE.Header.Campaign18", true, "Enemy At the Crates");
+    settings.Add("FE.Header.Campaign19", true, "We’re Foo Yung To Die");
+    settings.Add("FE.Header.Campaign20", true, "Mount-A-Strike");
+    settings.Add("FE.Header.Campaign21", true, "Reach for the Tsars");
+    settings.Add("FE.Header.Campaign22", true, "Stormtroupers");
+    settings.Add("FE.Header.Campaign23", true, "The Crate Wall");
+    settings.Add("FE.Header.Campaign24", true, "Chip Chopper Disaster");
+    settings.Add("FE.Header.Campaign25", true, "You Got the Hanger This");
+    settings.Add("FE.Header.Campaign26", true, "Blockbuster");
+    settings.Add("FE.Header.Campaign27", true, "It’s Nacho’s Fault");
+    settings.Add("FE.Header.Campaign28", true, "The Legend of Ro Ping ");
+    settings.Add("FE.Header.Campaign29", true, "Crafty Cavern Capers");
+    settings.Add("FE.Header.Campaign30", true, "Tsarface");
     settings.CurrentDefaultParent = null;
 
     // Add challenge missions to the settings (Edit Layout > Scriptable Autosplitter)
@@ -105,7 +138,11 @@ init {
 }
 
 split {
-    if (current.selectedCampaignMission != old.selectedCampaignMission
+    if (current.selectedTrainingMission != old.selectedTrainingMission
+            && (current.selectedTrainingMission.Contains("Basic")
+                || current.selectedTrainingMission.Contains("Training")
+                || current.selectedTrainingMission.Contains("Advanced"))
+        || current.selectedCampaignMission != old.selectedCampaignMission
         || current.selectedChallengeMission != old.selectedChallengeMission
         || current.selectedExtraMission != old.selectedExtraMission
         || current.selectedBonusMission != old.selectedBonusMission) {
