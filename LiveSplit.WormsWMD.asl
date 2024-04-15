@@ -3,7 +3,7 @@ state("Worms W.M.D") {
     string21 SelectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
     string19 SelectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
     string17 SelectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
-    
+
     // Is the game paused or not
     bool MenuOrPaused : "Worms W.M.D.exe", 0x1036752;
 
@@ -83,7 +83,7 @@ split {
 isLoading {
     // TODO: FIX THIS! This will return true when it's the enemy's turn. NOT WHAT WE WANT!
 
-    // The code bellow should work once IgTimerRunning is defined 
+    // The code bellow should work once IgTimerRunning is defined
     // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
 
     // Return true if the game is paused or in the menu
