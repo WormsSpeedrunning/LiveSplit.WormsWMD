@@ -1,11 +1,11 @@
 // Define the executable and variables
 state("Worms W.M.D") {
-    string21 SelectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
-    string19 SelectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
-    string17 SelectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
+    string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
+    string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
+    string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
 
     // Is the game paused or not
-    bool MenuOrPaused : "Worms W.M.D.exe", 0x1036752;
+    bool menuOrPaused : "Worms W.M.D.exe", 0x1036752;
 
     // TODO: Is the in game timer stopped or not (Cheat Engine Search: type is byte, 1 if timer moving, 0 if not)
     // bool IgTimerRunning : "Worms W.M.D.exe", offsets;
@@ -55,7 +55,7 @@ startup {
 start {
     // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
     //       This will prevent the timer from starting before the player can move.
-    if (!current.MenuOrPaused) { // && current.IgTimerRunning
+    if (!current.menuOrPaused) { // && current.IgTimerRunning
         return true;
     }
 }
@@ -68,12 +68,12 @@ init {
 }
 
 split {
-    if (current.SelectedChallengeMission != old.SelectedChallengeMission
-        || current.SelectedExtraMission != old.SelectedExtraMission
-        || current.SelectedBonusMission != old.SelectedBonusMission) {
+    if (current.selectedChallengeMission != old.selectedChallengeMission
+        || current.selectedExtraMission != old.selectedExtraMission
+        || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = !vars.tmpMissionIsChanging;
-    } else if (vars.tmpMissionIsChanging && !current.MenuOrPaused) {
+    } else if (vars.tmpMissionIsChanging && !current.menuOrPaused) {
         // Step 2: detect timer start
         vars.tmpMissionIsChanging = !vars.tmpMissionIsChanging;
         return true;
@@ -87,5 +87,5 @@ isLoading {
     // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
 
     // Return true if the game is paused or in the menu
-    return current.MenuOrPaused;
+    return current.menuOrPaused;
 }
