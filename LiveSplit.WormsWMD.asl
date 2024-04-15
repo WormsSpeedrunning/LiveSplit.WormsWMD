@@ -72,10 +72,10 @@ split {
         || current.selectedExtraMission != old.selectedExtraMission
         || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
-        vars.tmpMissionIsChanging = !vars.tmpMissionIsChanging;
+        vars.tmpMissionIsChanging = true;
     } else if (vars.tmpMissionIsChanging && !current.menuOrPaused) {
         // Step 2: detect timer start
-        vars.tmpMissionIsChanging = !vars.tmpMissionIsChanging;
+        vars.tmpMissionIsChanging = false;
         return true;
     }
 }
