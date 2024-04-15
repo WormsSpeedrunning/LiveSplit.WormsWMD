@@ -60,22 +60,25 @@ start {
     }
 }
 
-split {
-    // Check if any mission selection has changed
-    if (current.SelectedBonusMission != old.SelectedBonusMission) {
-        print(current.SelectedBonusMission.ToString());
-        return settings[current.SelectedBonusMission.ToString()];
-
-    } else if (current.SelectedChallengeMission != old.SelectedChallengeMission) {
-        print(current.SelectedChallengeMission.ToString());
-        return settings[current.SelectedChallengeMission.ToString()];
-        
-    } else if (current.SelectedExtraMission != old.SelectedExtraMission) {
-        print(current.SelectedExtraMission.ToString());
-        return settings[current.SelectedExtraMission.ToString()];
-    }
+init {
+    // Temporary variables used in split{}.
+    // Selected mission change is detected only once before the game/timer starts,
+    // therefore we need to keep that information in memory until the timer starts.
+    vars.tmpMissionIsChanging = false;
 }
 
+split {
+    if (current.SelectedChallengeMission != old.SelectedChallengeMission
+        || current.SelectedExtraMission != old.SelectedExtraMission
+        || current.SelectedBonusMission != old.SelectedBonusMission) {
+        // Step 1: detect selection of new mission in menu
+        vars.tmpMissionIsChanging = !vars.tmpMissionIsChanging;
+    } else if (vars.tmpMissionIsChanging && !current.MenuOrPaused) {
+        // Step 2: detect timer start
+        vars.tmpMissionIsChanging = !vars.tmpMissionIsChanging;
+        return true;
+    }
+}
 
 isLoading {
     // TODO: FIX THIS! This will return true when it's the enemy's turn. NOT WHAT WE WANT!
