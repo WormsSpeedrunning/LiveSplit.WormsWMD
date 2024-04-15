@@ -55,32 +55,8 @@ startup {
 start {
     // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
     //       This will prevent the timer from starting before the player can move.
-
     if (!current.MenuOrPaused) { // && current.IgTimerRunning
-        if (current.SelectedBonusMission.ToString() == "FE.Header.Bonus01") {
-            // Selected bonus mission is the first mission and the game is not paused
-            print(current.SelectedBonusMission.ToString());
-
-            return settings["FE.Header.Bonus01"];
-        }
-    }
-
-    if (!current.MenuOrPaused) { // && current.IgTimerRunning
-        if (current.SelectedChallengeMission.ToString() == "FE.Header.Challenge01") {
-            // Selected challenge mission is the first mission and the game is not paused
-            print(current.SelectedChallengeMission.ToString()); 
-
-            return settings["FE.Header.Challenge01"];
-        }
-    }
-
-    if (!current.MenuOrPaused) { // && current.IgTimerRunning
-        if (current.SelectedExtraMission.ToString() == "FE.Header.Carentan1") {
-            // Selected extra mission is the first mission and the game is not paused
-            print(current.SelectedExtraMission.ToString());  
-
-            return settings["FE.Header.Carentan1"];
-        }
+        return true;
     }
 }
 
