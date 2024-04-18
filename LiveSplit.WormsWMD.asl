@@ -6,11 +6,16 @@ state("Worms W.M.D") {
     string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
     string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
 
-    // Is the game paused or not
-    bool menuOrPaused : "Worms W.M.D.exe", 0x1036752;
+    // In a game
+    // False in menu and loading the game
+    // True in game, while paused, and on results page
+    bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
 
     // TODO: Is the in game timer stopped or not (Cheat Engine Search: type is byte, 1 if timer moving, 0 if not)
     // bool IgTimerRunning : "Worms W.M.D.exe", offsets;
+
+    // Graveyard
+    // bool menuOrPaused : "Worms W.M.D.exe", 0x1036752; --> also True when weapons menu open
 }
 
 startup {
@@ -125,7 +130,7 @@ startup {
 start {
     // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
     //       This will prevent the timer from starting before the player can move.
-    if (!current.menuOrPaused) { // && current.IgTimerRunning
+    if (current.inGame) { // && current.IgTimerRunning
         return true;
     }
 }
@@ -148,7 +153,7 @@ split {
         || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = true;
-    } else if (vars.tmpMissionIsChanging && !current.menuOrPaused) {
+    } else if (vars.tmpMissionIsChanging && current.inGame) {
         // Step 2: detect timer start
         vars.tmpMissionIsChanging = false;
         return true;
@@ -162,5 +167,5 @@ isLoading {
     // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
 
     // Return true if the game is paused or in the menu
-    return current.menuOrPaused;
+    return !current.inGame;
 }
