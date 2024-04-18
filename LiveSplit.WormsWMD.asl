@@ -11,11 +11,11 @@ state("Worms W.M.D") {
     // True in game, while paused, and on results page
     bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
 
+    // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
+    byte paused : "Worms W.M.D.exe", 0x50C342A;
+
     // TODO: Is the in game timer stopped or not (Cheat Engine Search: type is byte, 1 if timer moving, 0 if not)
     // bool IgTimerRunning : "Worms W.M.D.exe", offsets;
-
-    // Graveyard
-    // bool menuOrPaused : "Worms W.M.D.exe", 0x1036752; --> also True when weapons menu open
 }
 
 startup {
@@ -128,15 +128,14 @@ startup {
 }
 
 start {
+    return current.inGame; // && current.IgTimerRunning
+
     // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
     //       This will prevent the timer from starting before the player can move.
-    if (current.inGame) { // && current.IgTimerRunning
-        return true;
-    }
 }
 
 init {
-    // Temporary variables used in split{}.
+    // Temporary variable used in split{}.
     // Selected mission change is detected only once before the game/timer starts,
     // therefore we need to keep that information in memory until the timer starts.
     vars.tmpMissionIsChanging = false;
@@ -161,11 +160,9 @@ split {
 }
 
 isLoading {
-    // TODO: FIX THIS! This will return true when it's the enemy's turn. NOT WHAT WE WANT!
-
-    // The code bellow should work once IgTimerRunning is defined
-    // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
-
     // Return true if the game is paused or in the menu
-    return !current.inGame;
+    return !current.inGame || current.paused > 1;
+
+    // The code below should work once IgTimerRunning is defined
+    // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
 }

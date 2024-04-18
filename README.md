@@ -31,7 +31,6 @@ The layout and splits files are somewhat personal and meant to be created from s
 - [ ] Add Support for Basic, Pro and Basic+Pro training missions
 - [ ] Split only after in game rather than immediately when the level loads
 
-
 ## Development
 
 ### Import
