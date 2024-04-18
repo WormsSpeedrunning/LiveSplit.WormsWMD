@@ -18,6 +18,46 @@ state("Worms W.M.D") {
     // bool IgTimerRunning : "Worms W.M.D.exe", offsets;
 }
 
+start {
+    return current.inGame; // && current.IgTimerRunning
+
+    // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
+    //       This will prevent the timer from starting before the player can move.
+}
+
+init {
+    // Temporary variable used in split{}.
+    // Selected mission change is detected only once before the game/timer starts,
+    // therefore we need to keep that information in memory until the timer starts.
+    vars.tmpMissionIsChanging = false;
+}
+
+split {
+    if (current.selectedTrainingMission != old.selectedTrainingMission
+            && (current.selectedTrainingMission.Contains("Basic")
+                || current.selectedTrainingMission.Contains("Training")
+                || current.selectedTrainingMission.Contains("Advanced"))
+        || current.selectedCampaignMission != old.selectedCampaignMission
+        || current.selectedChallengeMission != old.selectedChallengeMission
+        || current.selectedExtraMission != old.selectedExtraMission
+        || current.selectedBonusMission != old.selectedBonusMission) {
+        // Step 1: detect selection of new mission in menu
+        vars.tmpMissionIsChanging = true;
+    } else if (vars.tmpMissionIsChanging && current.inGame) {
+        // Step 2: detect timer start
+        vars.tmpMissionIsChanging = false;
+        return true;
+    }
+}
+
+isLoading {
+    // Return true if the game is paused or in the menu
+    return !current.inGame || current.paused > 1;
+
+    // The code below should work once IgTimerRunning is defined
+    // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
+}
+
 startup {
     // Add training missions to the settings (Edit Layout > Scriptable Autosplitter)
     settings.Add("training_missions", true, "Training Missions");
@@ -125,44 +165,4 @@ startup {
     settings.Add("FE.Header.Bonus05", true, "Countdown To Armaggeddon");
     settings.Add("FE.Header.Bonus06", true, "Unturned");
     settings.Add("FE.Header.Bonus07", true, "The Escapists");
-}
-
-start {
-    return current.inGame; // && current.IgTimerRunning
-
-    // TODO: Instead of starting the timer when the bool changes, Start the timer when IgTimerRunning changes the first time
-    //       This will prevent the timer from starting before the player can move.
-}
-
-init {
-    // Temporary variable used in split{}.
-    // Selected mission change is detected only once before the game/timer starts,
-    // therefore we need to keep that information in memory until the timer starts.
-    vars.tmpMissionIsChanging = false;
-}
-
-split {
-    if (current.selectedTrainingMission != old.selectedTrainingMission
-            && (current.selectedTrainingMission.Contains("Basic")
-                || current.selectedTrainingMission.Contains("Training")
-                || current.selectedTrainingMission.Contains("Advanced"))
-        || current.selectedCampaignMission != old.selectedCampaignMission
-        || current.selectedChallengeMission != old.selectedChallengeMission
-        || current.selectedExtraMission != old.selectedExtraMission
-        || current.selectedBonusMission != old.selectedBonusMission) {
-        // Step 1: detect selection of new mission in menu
-        vars.tmpMissionIsChanging = true;
-    } else if (vars.tmpMissionIsChanging && current.inGame) {
-        // Step 2: detect timer start
-        vars.tmpMissionIsChanging = false;
-        return true;
-    }
-}
-
-isLoading {
-    // Return true if the game is paused or in the menu
-    return !current.inGame || current.paused > 1;
-
-    // The code below should work once IgTimerRunning is defined
-    // return (current.MenuOrPaused && !current.IgTimerRunning) || !current.IgTimerRunning;
 }
