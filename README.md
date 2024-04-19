@@ -1,6 +1,9 @@
 # LiveSplit.WormsWMD
 Worms W.M.D autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
 
+[![License: MIT](https://img.shields.io/stephanebruckert/LiveSplit.WormsWMD)](https://opensource.org/licenses/MIT)
+
+
 ### NOT PRODUCTION READY HAS MAJOR BUGS!
 
 ## First Usage
