@@ -6,9 +6,7 @@ state("Worms W.M.D") {
     string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
     string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
 
-    // In a game
-    // False in menu and loading the game
-    // True in game, while paused, and on results page
+    // False in main menu, True otherwise (in game, paused, results)
     bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
 
     // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
@@ -16,9 +14,6 @@ state("Worms W.M.D") {
 
     // True when replaying
     bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
-
-    // Graveyard
-    bool menuOrPaused : "Worms W.M.D.exe", 0x1036752; // --> also True when weapons menu open
 }
 
 start {
