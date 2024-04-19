@@ -13,6 +13,9 @@ state("Worms W.M.D") {
 
     // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
     byte paused : "Worms W.M.D.exe", 0x50C342A;
+
+    // True when replaying
+    bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
 }
 
 start {
@@ -45,8 +48,8 @@ split {
 }
 
 isLoading {
-    // Return true if the game is paused or in the menu
-    return !current.inGame || current.paused > 1;
+    // Return true if the game is paused, in the menu, or replaying
+    return !current.inGame || current.paused > 1 || current.replay;
 }
 
 startup {
