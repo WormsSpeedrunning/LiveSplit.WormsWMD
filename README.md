@@ -4,6 +4,7 @@ Worms W.M.D autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
 <!-- PROJECT SHIELDS -->
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+![Status](https://img.shields.io/badge/status-alpha-blue)
 
 
 ### NOT PRODUCTION READY HAS MAJOR BUGS!
@@ -58,7 +59,10 @@ To find memory values, their base address and offsets, this technique is very ef
 To view logs/prints, download [DebugView](https://learn.microsoft.com/en-us/sysinternals/downloads/debugview).
 To view errors, use Event Viewer already on Windows.
 
+
+<!-- VARIABLES -->
 [issues-shield]: https://img.shields.io/github/issues/stephanebruckert/LiveSplit.WormsWMD.svg
 [issues-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/issues
 [license-shield]: https://img.shields.io/github/license/stephanebruckert/LiveSplit.WormsWMD
 [license-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/blob/master/LICENSE
+
