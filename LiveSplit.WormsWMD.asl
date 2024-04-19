@@ -16,6 +16,9 @@ state("Worms W.M.D") {
 
     // True when replaying
     bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
+
+    // Graveyard
+    bool menuOrPaused : "Worms W.M.D.exe", 0x1036752; // --> also True when weapons menu open
 }
 
 start {
@@ -49,7 +52,11 @@ split {
 
 isLoading {
     // Return true if the game is paused, in the menu, or replaying
-    return !current.inGame || current.paused > 1 || current.replay;
+    return
+        !current.inGame // check if we are in game
+        || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
+        || current.replay; // check if we are playing an instant replay
+
 }
 
 startup {
