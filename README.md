@@ -61,4 +61,4 @@ To view errors, use Event Viewer already on Windows.
 [issues-shield]: https://img.shields.io/github/issues/stephanebruckert/LiveSplit.WormsWMD.svg
 [issues-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/issues
 [license-shield]: https://img.shields.io/github/license/stephanebruckert/LiveSplit.WormsWMD
-[license-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/blob/master/LICENSE.txt
+[license-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/blob/master/LICENSE
