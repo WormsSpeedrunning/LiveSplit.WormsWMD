@@ -34,9 +34,7 @@ The layout and splits files are somewhat personal and meant to be created from s
   12. Done. You should now be able to open up a level and the timer should automatically start
 
 ### TODO:
-- [ ] Add Support for Basic, Pro and Basic+Pro training missions
 - [ ] Split only after in game rather than immediately when the level loads
-- [ ] Fix problem when exiting a mission timer keeps going for a little and then stops again
 
 ## Development
 
