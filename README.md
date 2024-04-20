@@ -17,7 +17,7 @@ The layout and splits files are somewhat personal and meant to be created from s
     - import from a URL
 
 ## Installation
-  1. Go to the [releases](https://github.com/stephanebruckert/LiveSplit.WormsWMD/releases/) page and download the `Worms-WMD-Autosplitter.zip` from the latest release
+  1. Go to the [releases](https://github.com/stephanebruckert/LiveSplit.WormsWMD/releases/) page and download the `Worms-WMD-Autosplitter-<version>.zip` from the latest release
   2. Extract the archive into your desired location
   3. Open up [LiveSplit](https://livesplit.org/)
   4. Right click on the timer
