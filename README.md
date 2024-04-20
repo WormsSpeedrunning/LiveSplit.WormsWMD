@@ -6,9 +6,6 @@ Worms W.M.D autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
 [![MIT License][license-shield]][license-url]
 ![Status](https://img.shields.io/badge/status-alpha-blue)
 
-
-### NOT PRODUCTION READY HAS MAJOR BUGS!
-
 ## First Usage
 
 This script is automatically detected by LiveSplit as part of https://github.com/LiveSplit/LiveSplit.AutoSplitters/blob/master/LiveSplit.AutoSplitters.xml
