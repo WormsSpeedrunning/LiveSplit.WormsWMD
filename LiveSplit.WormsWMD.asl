@@ -14,10 +14,18 @@ state("Worms W.M.D") {
 
     // True when replaying
     bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
+
+    // True when it's the current player's turn, but:
+    //      Initially true in the menu
+    //      False when loading the level
+    //      True when the first pre-timer starts
+    //      False when the CPU pre-timer starts
+    //      True or false in the results page and main menu depending on who played last
+    bool playerTurn : "Worms W.M.D.exe", 0xDCCC0D4;
 }
 
 start {
-    return current.inGame;
+    return current.inGame && current.playerTurn;
 }
 
 init {
@@ -39,6 +47,8 @@ split {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = true;
     } else if (vars.tmpMissionIsChanging && current.inGame) {
+        // TODO: use playerTurn for a later split, but make sure isLoading is true until the split happens
+
         // Step 2: detect timer start
         vars.tmpMissionIsChanging = false;
         return true;
@@ -51,7 +61,6 @@ isLoading {
         !current.inGame // check if we are in game
         || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
         || current.replay; // check if we are playing an instant replay
-
 }
 
 startup {
