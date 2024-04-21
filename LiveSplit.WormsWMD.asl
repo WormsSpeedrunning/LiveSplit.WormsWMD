@@ -1,19 +1,19 @@
 // Define the executable and variables
 state("Worms W.M.D") {
-    string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
-    string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
-    string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
-    string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
-    string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
+    string33 selectedTrainingMission : "Worms W.M.D.exe", 0xF103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
+    string20 selectedCampaignMission : "Worms W.M.D.exe", 0xF103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
+    string21 selectedChallengeMission : "Worms W.M.D.exe", 0xF10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
+    string19 selectedExtraMission : "Worms W.M.D.exe", 0xF103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
+    string17 selectedBonusMission : "Worms W.M.D.exe", 0xF103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
 
     // False in main menu, True otherwise (in game, paused, results)
-    bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
+    bool inGame : "Worms W.M.D.exe", 0x11E7A8, 0x0;
 
     // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
     byte paused : "Worms W.M.D.exe", 0x50C342A;
 
     // True when replaying
-    bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
+    bool replay : "Worms W.M.D.exe", 0x415D8C, 0x0;
 
     // True when it's the current player's turn, but:
     //      Initially true in the menu
@@ -21,7 +21,7 @@ state("Worms W.M.D") {
     //      True when the first pre-timer starts
     //      False when the CPU pre-timer starts
     //      True or false in the results page and main menu depending on who played last
-    bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
+    bool playerTurn : "Worms W.M.D.exe", 0x32593C, 0x0;
 }
 
 start {
