@@ -21,7 +21,7 @@ state("Worms W.M.D") {
     //      True when the first pre-timer starts
     //      False when the CPU pre-timer starts
     //      True or false in the results page and main menu depending on who played last
-    bool playerTurn : "Worms W.M.D.exe", 0xDCCC0D4;
+    bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
 }
 
 start {
