@@ -59,13 +59,12 @@ split {
 }
 
 isLoading {
-    print(current.resultsPage.ToString());
     // Return true if the game is paused, in the menu, or replaying
     return
         !current.inGame // check if we are in game
         || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
         || current.replay // check if we are playing an instant replay
-        || current.resultsPage;
+        || current.resultsPage; // results page showed up
 }
 
 startup {
