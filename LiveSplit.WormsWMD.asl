@@ -22,6 +22,9 @@ state("Worms W.M.D") {
     //      False when the CPU pre-timer starts
     //      True or false in the results page and main menu depending on who played last
     bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
+
+    // True when on the results page
+    bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 }
 
 start {
@@ -56,11 +59,13 @@ split {
 }
 
 isLoading {
+    print(current.resultsPage.ToString());
     // Return true if the game is paused, in the menu, or replaying
     return
         !current.inGame // check if we are in game
         || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
-        || current.replay; // check if we are playing an instant replay
+        || current.replay // check if we are playing an instant replay
+        || current.resultsPage;
 }
 
 startup {
