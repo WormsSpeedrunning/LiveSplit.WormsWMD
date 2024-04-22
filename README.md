@@ -4,7 +4,7 @@ Worms W.M.D autosplitter for LiveSplit written in ASL (Auto-Splitter Language).
 <!-- PROJECT SHIELDS -->
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-![Status](https://img.shields.io/badge/status-alpha-blue)
+![Status](https://img.shields.io/badge/status-beta-blue)
 
 ## First Usage
 
