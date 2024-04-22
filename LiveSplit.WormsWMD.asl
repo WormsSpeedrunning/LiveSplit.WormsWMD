@@ -15,20 +15,23 @@ state("Worms W.M.D") {
     // True when replaying
     bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
 
-    // True when it's the current player's turn, but:
-    //      Initially true in the menu
-    //      False when loading the level
-    //      True when the first pre-timer starts
-    //      False when the CPU pre-timer starts
-    //      True or false in the results page and main menu depending on who played last
-    bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
-
     // True when on the results page
     bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
+
+    //// Graveyard
+
+    // Doesn't work for everyone
+    // // True when it's the current player's turn, but:
+    // //      Initially true in the menu
+    // //      False when loading the level
+    // //      True when the first pre-timer starts
+    // //      False when the CPU pre-timer starts
+    // //      True or false in the results page and main menu depending on who played last
+    // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
 }
 
 start {
-    return current.inGame && current.playerTurn;
+    return current.inGame && current.paused <= 1; // TODO: use && current.playerTurn instead
 }
 
 init {
