@@ -32,7 +32,7 @@ The layout and splits files are somewhat personal and meant to be created from s
 
 ### TODO:
 - [ ] Split only after in game rather than immediately when the level loads
-- [ ] Pause the timer when the in game timer stops for example when taking damage
+- [ ] Pause the timer when the in game timer stops for example when taking damage or when the game ends
 
 ## Development
 
