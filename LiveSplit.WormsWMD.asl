@@ -62,7 +62,7 @@ split {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = true;
     } else if (vars.tmpMissionIsChanging && !current.playerPretimer && current.playerPretimer != old.playerPretimer) {
-        // Step 2: detect timer start
+        // Step 2: detect pre-timer end
         vars.tmpMissionIsChanging = false;
         return true;
     }
