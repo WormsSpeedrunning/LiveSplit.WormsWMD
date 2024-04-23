@@ -39,7 +39,8 @@ state("Worms W.M.D") {
 }
 
 start {
-    return current.playerPretimer;
+    // Start after pre-timer
+    return !current.playerPretimer && current.playerPretimer != old.playerPretimer;
 }
 
 init {
@@ -60,7 +61,7 @@ split {
         || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = true;
-    } else if (vars.tmpMissionIsChanging && current.playerPretimer) {
+    } else if (vars.tmpMissionIsChanging && !current.playerPretimer && current.playerPretimer != old.playerPretimer) {
         // Step 2: detect timer start
         vars.tmpMissionIsChanging = false;
         return true;
