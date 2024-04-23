@@ -18,6 +18,9 @@ state("Worms W.M.D") {
     // True when on the results page
     bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 
+    // Only true when player's turn pre-timer
+    bool playerPretimer : "Worms W.M.D.exe", 0xF10384D;
+
     //// Graveyard
 
     // Doesn't work for everyone
@@ -28,10 +31,15 @@ state("Worms W.M.D") {
     // //      False when the CPU pre-timer starts
     // //      True or false in the results page and main menu depending on who played last
     // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
+
+    // // Not the timer the player can see, but a general timer with microseconds precision
+    // // starting from level load and ending on results page.
+    // // Seems to only pause when pausing the game.
+    // float levelTimer : "Worms W.M.D.exe", 0xDCCF090;
 }
 
 start {
-    return current.inGame && current.paused <= 1; // TODO: use && current.playerTurn instead
+    return current.playerPretimer;
 }
 
 init {
@@ -52,9 +60,7 @@ split {
         || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = true;
-    } else if (vars.tmpMissionIsChanging && current.inGame) {
-        // TODO: use playerTurn for a later split, but make sure isLoading is true until the split happens
-
+    } else if (vars.tmpMissionIsChanging && current.playerPretimer) {
         // Step 2: detect timer start
         vars.tmpMissionIsChanging = false;
         return true;
@@ -62,12 +68,13 @@ split {
 }
 
 isLoading {
-    // Return true if the game is paused, in the menu, or replaying
+    // Return true if the game is loading, replaying, paused or in a menu
     return
         !current.inGame // check if we are in game
         || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
         || current.replay // check if we are playing an instant replay
-        || current.resultsPage; // results page showed up
+        || current.resultsPage // results page showed up
+        || vars.tmpMissionIsChanging; // check if current mission first pre-timer hasn't started yet
 }
 
 startup {
