@@ -19,7 +19,7 @@ state("Worms W.M.D") {
     bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 
     // Only true when player's turn pre-timer
-    bool playerPretimer : "Worms W.M.D.exe", 0xF10384D;
+    bool hotseatTimer : "Worms W.M.D.exe", 0xF10384D;
 
     //// Graveyard
 
@@ -39,8 +39,8 @@ state("Worms W.M.D") {
 }
 
 start {
-    // Start after pre-timer
-    return !current.playerPretimer && current.playerPretimer != old.playerPretimer;
+    // Start after hotseat timer
+    return !current.hotseatTimer && current.hotseatTimer != old.hotseatTimer;
 }
 
 init {
@@ -61,8 +61,8 @@ split {
         || current.selectedBonusMission != old.selectedBonusMission) {
         // Step 1: detect selection of new mission in menu
         vars.tmpMissionIsChanging = true;
-    } else if (vars.tmpMissionIsChanging && !current.playerPretimer && current.playerPretimer != old.playerPretimer) {
-        // Step 2: detect pre-timer end
+    } else if (vars.tmpMissionIsChanging && !current.hotseatTimer && current.hotseatTimer != old.hotseatTimer) {
+        // Step 2: detect hotseat timer end
         vars.tmpMissionIsChanging = false;
         return true;
     }
