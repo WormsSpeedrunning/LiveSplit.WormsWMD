@@ -51,18 +51,22 @@ init {
 }
 
 split {
+
+    // Step 1: detect selection of new mission in menu
     if (current.selectedTrainingMission != old.selectedTrainingMission
-            && (current.selectedTrainingMission.Contains("Basic")
-                || current.selectedTrainingMission.Contains("Training")
-                || current.selectedTrainingMission.Contains("Advanced"))
+        && (current.selectedTrainingMission.Contains("Basic")
+        || current.selectedTrainingMission.Contains("Training")
+        || current.selectedTrainingMission.Contains("Advanced"))
         || current.selectedCampaignMission != old.selectedCampaignMission
         || current.selectedChallengeMission != old.selectedChallengeMission
         || current.selectedExtraMission != old.selectedExtraMission
         || current.selectedBonusMission != old.selectedBonusMission) {
-        // Step 1: detect selection of new mission in menu
+
         vars.tmpMissionIsChanging = true;
+
+    // Step 2: detect hotseat timer end
     } else if (vars.tmpMissionIsChanging && !current.hotseatTimer && current.hotseatTimer != old.hotseatTimer) {
-        // Step 2: detect hotseat timer end
+
         vars.tmpMissionIsChanging = false;
         return true;
     }
