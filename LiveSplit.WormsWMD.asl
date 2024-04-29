@@ -19,7 +19,12 @@ state("Worms W.M.D") {
     bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 
     // Only true when player's turn hotseat timer
-    bool hotseatTimer : "Worms W.M.D.exe", 0xF10384D;
+    bool playerHotseatTimer : "Worms W.M.D.exe", 0xF10384D;
+
+    // Not the timer the player can see, but a general timer with microseconds precision
+    // starting from level load and ending on results page.
+    // Only pauses when pausing the game
+    float levelTimer : "Worms W.M.D.exe", 0xDCCF090;
 
     //// Graveyard
 
@@ -31,28 +36,39 @@ state("Worms W.M.D") {
     // //      False when the CPU hotseat timer starts
     // //      True or false in the results page and main menu depending on who played last
     // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
-
-    // // Not the timer the player can see, but a general timer with microseconds precision
-    // // starting from level load and ending on results page.
-    // // Seems to only pause when pausing the game.
-    // float levelTimer : "Worms W.M.D.exe", 0xDCCF090;
-}
-
-start {
-    // Start after hotseat timer
-    return !current.hotseatTimer && current.hotseatTimer != old.hotseatTimer;
 }
 
 init {
-    // Temporary variable used in split{}.
-    // Selected mission change is detected only once before the game/timer starts,
-    // therefore we need to keep that information in memory until the timer starts.
-    vars.tmpMissionIsChanging = false;
+    // Whether a new level changing, used in split{}
+    vars.tmpMissionChanging = false;
+
+    // Whether the same level is restarting, used in isLoading{}
+    vars.tmpMissionIsRestarting = false;
+
+    // Whether the first hotset timer of a level has already triggered
+    vars.tmpFirstHotseatTimerTriggered = false;
+}
+
+update {
+    vars.tmpFirstHotseatTimerTriggered = !current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
+
+    // Detect restart of the same level
+    if (current.levelTimer < old.levelTimer) {
+        // After a new level timer starts
+        vars.tmpMissionIsRestarting = true;
+    } else if (vars.tmpFirstHotseatTimerTriggered) {
+        // Wait until the first pre-timer starts
+        vars.tmpMissionIsRestarting = false;
+    }
+}
+
+start {
+    // Start after first pre-timer
+    return vars.tmpFirstHotseatTimerTriggered;
 }
 
 split {
-
-    // Step 1: detect selection of new mission in menu
+    // Detect new level change
     if (current.selectedTrainingMission != old.selectedTrainingMission
         && (current.selectedTrainingMission.Contains("Basic")
         || current.selectedTrainingMission.Contains("Training")
@@ -61,13 +77,11 @@ split {
         || current.selectedChallengeMission != old.selectedChallengeMission
         || current.selectedExtraMission != old.selectedExtraMission
         || current.selectedBonusMission != old.selectedBonusMission) {
-
-        vars.tmpMissionIsChanging = true;
-
-    // Step 2: detect hotseat timer end
-    } else if (vars.tmpMissionIsChanging && !current.hotseatTimer && current.hotseatTimer != old.hotseatTimer) {
-
-        vars.tmpMissionIsChanging = false;
+        // After a new level is selected
+        vars.tmpMissionChanging = true;
+    } else if (vars.tmpMissionChanging && vars.tmpFirstHotseatTimerTriggered) {
+        // Wait until the first pre-timer starts
+        vars.tmpMissionChanging = false;
         return true;
     }
 }
@@ -79,7 +93,7 @@ isLoading {
         || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
         || current.replay // check if we are playing an instant replay
         || current.resultsPage // results page showed up
-        || vars.tmpMissionIsChanging; // check if current mission first hotseat timer hasn't started yet
+        || vars.tmpMissionIsRestarting; // check if first hotseat timer hasn't started yet
 }
 
 startup {
