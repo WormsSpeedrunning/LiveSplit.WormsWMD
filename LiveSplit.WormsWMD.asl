@@ -27,8 +27,8 @@ state("Worms W.M.D") {
     // // True when it's the current player's turn, but:
     // //      Initially true in the menu
     // //      False when loading the level
-    // //      True when the first pre-timer starts
-    // //      False when the CPU pre-timer starts
+    // //      True when the first hotseat timer starts
+    // //      False when the CPU hotseat timer starts
     // //      True or false in the results page and main menu depending on who played last
     // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
 
