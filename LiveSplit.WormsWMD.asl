@@ -18,7 +18,7 @@ state("Worms W.M.D") {
     // True when on the results page
     bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 
-    // Only true when player's turn pre-timer
+    // Only true when player's turn hotseat timer
     bool hotseatTimer : "Worms W.M.D.exe", 0xF10384D;
 
     //// Graveyard
@@ -75,7 +75,7 @@ isLoading {
         || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
         || current.replay // check if we are playing an instant replay
         || current.resultsPage // results page showed up
-        || vars.tmpMissionIsChanging; // check if current mission first pre-timer hasn't started yet
+        || vars.tmpMissionIsChanging; // check if current mission first hotseat timer hasn't started yet
 }
 
 startup {
