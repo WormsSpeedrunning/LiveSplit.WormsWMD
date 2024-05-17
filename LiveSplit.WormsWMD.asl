@@ -60,10 +60,7 @@ init {
     // Sum of seconds played on the same level, including restarts
     vars.currentLevelTotalSecondsPlayed = 0;
 
-    // Seconds played since the last restart of a level
-    vars.currentRestartSeconds = 0;
-
-    // Same as above?
+    // Seconds played since start or restart of a level
     vars.currentTimerSecondsRemaining = 0;
 }
 
@@ -74,7 +71,7 @@ update {
     if (current.levelTimer < old.levelTimer && timer.CurrentTime.RealTime.Value.TotalSeconds != 0) {
         // After a new level timer starts
         vars.tmpMissionIsRestarting = true;
-        vars.currentLevelTotalSecondsPlayed += vars.currentRestartSeconds;
+        vars.currentLevelTotalSecondsPlayed += vars.currentTimerSecondsRemaining ;
     } else if (vars.tmpFirstHotseatTimerTriggered) {
         // Wait until the first pre-timer starts
         vars.tmpMissionIsRestarting = false;
@@ -86,9 +83,9 @@ start {
     // Start after first pre-timer
     if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered) {
         vars.currentLevelTotalSecondsPlayed = 0;
-        vars.currentRestartSeconds = 0;
+        vars.currentTimerSecondsRemaining  = 0;
 
-        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining ;
 
         return true;
     }
@@ -115,10 +112,10 @@ split {
 }
 
 onSplit {
-    vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+    vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining ;
     vars.tmpMissionRestarted = false;
     vars.currentLevelTotalSecondsPlayed = 0;
-    vars.currentRestartSeconds = 0;
+    vars.currentTimerSecondsRemaining  = 0;
 }
 
 isLoading {
@@ -136,11 +133,11 @@ gameTime {
         string[] splitDuration = current.displayedTimer.Split(':');
 
         int minutes = Convert.ToInt32(splitDuration[0]);
-        vars.currentTimerSecondsRemaining = minutes * 60 + Convert.ToInt32(splitDuration[1]);
+        vars.currentTimerSecondsRemaining  = minutes * 60 + Convert.ToInt32(splitDuration[1]);
 
-        vars.currentRestartSeconds = vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+        vars.currentTimerSecondsRemaining  = vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining ;
 
-        return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.currentRestartSeconds);
+        return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.currentTimerSecondsRemaining );
     }
 }
 
