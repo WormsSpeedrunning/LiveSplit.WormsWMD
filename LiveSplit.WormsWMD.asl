@@ -51,9 +51,6 @@ init {
     // Whether the same level is restarting, used in isLoading{}
     vars.tmpMissionIsRestarting = false;
 
-    // Same as above?
-    vars.tmpMissionRestarted = false;
-
     // The initial timer for a mission
     vars.missionInitialTotalSeconds = 0;
 
@@ -71,11 +68,10 @@ update {
     if (current.levelTimer < old.levelTimer && timer.CurrentTime.RealTime.Value.TotalSeconds != 0) {
         // After a new level timer starts
         vars.tmpMissionIsRestarting = true;
-        vars.currentLevelTotalSecondsPlayed += vars.currentTimerSecondsRemaining ;
+        vars.currentLevelTotalSecondsPlayed += vars.currentTimerSecondsRemaining;
     } else if (vars.tmpFirstHotseatTimerTriggered) {
         // Wait until the first pre-timer starts
         vars.tmpMissionIsRestarting = false;
-        vars.tmpMissionRestarted = true;
     }
 }
 
@@ -83,9 +79,9 @@ start {
     // Start after first pre-timer
     if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered) {
         vars.currentLevelTotalSecondsPlayed = 0;
-        vars.currentTimerSecondsRemaining  = 0;
+        vars.currentTimerSecondsRemaining = 0;
 
-        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining ;
+        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
 
         return true;
     }
@@ -106,16 +102,15 @@ split {
     } else if (vars.tmpMissionChanging && current.inGame) {
         // Wait until the first pre-timer starts
         vars.tmpMissionChanging = false;
-        vars.tmpMissionRestarted = true;
         return true;
     }
 }
 
 onSplit {
-    vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining ;
-    vars.tmpMissionRestarted = false;
+    vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+    vars.tmpMissionIsRestarting = true;
     vars.currentLevelTotalSecondsPlayed = 0;
-    vars.currentTimerSecondsRemaining  = 0;
+    vars.currentTimerSecondsRemaining = 0;
 }
 
 isLoading {
@@ -129,13 +124,13 @@ isLoading {
 }
 
 gameTime {
-    if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered && !vars.tmpMissionRestarted) {
+    if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered && vars.tmpMissionIsRestarting) {
         string[] splitDuration = current.displayedTimer.Split(':');
 
         int minutes = Convert.ToInt32(splitDuration[0]);
-        vars.currentTimerSecondsRemaining  = minutes * 60 + Convert.ToInt32(splitDuration[1]);
+        vars.currentTimerSecondsRemaining = minutes * 60 + Convert.ToInt32(splitDuration[1]);
 
-        vars.currentTimerSecondsRemaining  = vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining ;
+        vars.currentTimerSecondsRemaining = vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
 
         return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.currentTimerSecondsRemaining );
     }
