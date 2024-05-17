@@ -26,6 +26,9 @@ state("Worms W.M.D") {
     // Only pauses when pausing the game
     float levelTimer : "Worms W.M.D.exe", 0xDCCF090;
 
+    // Training time looks like mm:ss.ms
+    string8 displayedTimer: "Worms W.M.D.exe", 0x0F103838, 0x2A8;
+
     //// Graveyard
 
     // Doesn't work for everyone
@@ -42,29 +45,53 @@ init {
     // Whether a new level changing, used in split{}
     vars.tmpMissionChanging = false;
 
+    // Whether the first hotset timer of a level has already triggered
+    vars.tmpFirstHotseatTimerTriggered = false;
+
     // Whether the same level is restarting, used in isLoading{}
     vars.tmpMissionIsRestarting = false;
 
-    // Whether the first hotset timer of a level has already triggered
-    vars.tmpFirstHotseatTimerTriggered = false;
+    // Same as above?
+    vars.tmpMissionRestarted = false;
+
+    // The initial timer for a mission
+    vars.missionInitialTotalSeconds = 0;
+
+    // Sum of seconds played on the same level, including restarts
+    vars.currentLevelTotalSecondsPlayed = 0;
+
+    // Seconds played since the last restart of a level
+    vars.currentRestartSeconds = 0;
+
+    // Same as above?
+    vars.currentTimerSecondsRemaining = 0;
 }
 
 update {
     vars.tmpFirstHotseatTimerTriggered = !current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
 
     // Detect restart of the same level
-    if (current.levelTimer < old.levelTimer) {
+    if (current.levelTimer < old.levelTimer && timer.CurrentTime.RealTime.Value.TotalSeconds != 0) {
         // After a new level timer starts
         vars.tmpMissionIsRestarting = true;
+        vars.currentLevelTotalSecondsPlayed += vars.currentRestartSeconds;
     } else if (vars.tmpFirstHotseatTimerTriggered) {
         // Wait until the first pre-timer starts
         vars.tmpMissionIsRestarting = false;
+        vars.tmpMissionRestarted = true;
     }
 }
 
 start {
     // Start after first pre-timer
-    return vars.tmpFirstHotseatTimerTriggered;
+    if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered) {
+        vars.currentLevelTotalSecondsPlayed = 0;
+        vars.currentRestartSeconds = 0;
+
+        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+
+        return true;
+    }
 }
 
 split {
@@ -79,11 +106,19 @@ split {
         || current.selectedBonusMission != old.selectedBonusMission) {
         // After a new level is selected
         vars.tmpMissionChanging = true;
-    } else if (vars.tmpMissionChanging && vars.tmpFirstHotseatTimerTriggered) {
+    } else if (vars.tmpMissionChanging && current.inGame) {
         // Wait until the first pre-timer starts
         vars.tmpMissionChanging = false;
+        vars.tmpMissionRestarted = true;
         return true;
     }
+}
+
+onSplit {
+    vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+    vars.tmpMissionRestarted = false;
+    vars.currentLevelTotalSecondsPlayed = 0;
+    vars.currentRestartSeconds = 0;
 }
 
 isLoading {
@@ -94,6 +129,19 @@ isLoading {
         || current.replay // check if we are playing an instant replay
         || current.resultsPage // results page showed up
         || vars.tmpMissionIsRestarting; // check if first hotseat timer hasn't started yet
+}
+
+gameTime {
+    if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered && !vars.tmpMissionRestarted) {
+        string[] splitDuration = current.displayedTimer.Split(':');
+
+        int minutes = Convert.ToInt32(splitDuration[0]);
+        vars.currentTimerSecondsRemaining = minutes * 60 + Convert.ToInt32(splitDuration[1]);
+
+        vars.currentRestartSeconds = vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+
+        return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.currentRestartSeconds);
+    }
 }
 
 startup {
