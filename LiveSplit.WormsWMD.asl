@@ -129,10 +129,8 @@ gameTime {
 
         int minutes = Convert.ToInt32(splitDuration[0]);
         vars.currentTimerSecondsRemaining = minutes * 60 + Convert.ToInt32(splitDuration[1]);
-
-        vars.currentTimerSecondsRemaining = vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
-
-        return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.currentTimerSecondsRemaining );
+        print(vars.currentTimerSecondsRemaining);
+        return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining);
     }
 }
 
