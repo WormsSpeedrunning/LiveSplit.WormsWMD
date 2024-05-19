@@ -30,13 +30,22 @@ The layout and splits files are somewhat personal and meant to be created from s
   11. Create or download the splits (`Right click on the timer > Edit Splits`), You can also copy and paste the levels from [here](https://docs.google.com/spreadsheets/d/1wLOU4FbLXlK7e3cd_i5Iwp5cv3UWQyyUSuk-VmZqfHk/edit?usp=sharing)
   12. Done. You should now be able to open up a level and the timer should automatically start
 
+## Rules
+
+- Missions can be played in any order
+- Restarting is allowed, the previous attempt game time will be counted
+- Going back to the main menu triggers a split, this means:
+  - starting a mission requires to finish it successfully
+  - need to be careful not to enter the same level twice
+
 ### TODO:
-- [ ] Pause the timer when the in game timer stops for example when taking damage or when the game ends
+- [x] Pause the timer when the in game timer stops for example when taking damage or when the game ends
 - [ ] Handle milliseconds to make it work for training missions
-- [ ] Detect last level end to stop the timer (currently having to enter a new level to trigger the last split)
+- [x] Detect last level end to stop the timer (currently having to enter a new level to trigger the last split)
+- [ ] Reset the timer to 0 when restarting the first level
 
 #### Finetuning:
-- [ ] Fix Bug: When exiting level the timer starts and stops for a second
+- [x] Fix Bug: When exiting level the timer starts and stops for a second
 
 ## Development
 

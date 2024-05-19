@@ -1,22 +1,7 @@
 // Define the executable and variables
 state("Worms W.M.D") {
-    string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
-    string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
-    string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
-    string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
-    string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
-
     // False in main menu, True otherwise (in game, paused, results)
     bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
-
-    // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
-    byte paused : "Worms W.M.D.exe", 0x50C342A;
-
-    // True when replaying
-    bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
-
-    // True when on the results page
-    bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 
     // Only true when player's turn hotseat timer
     bool playerHotseatTimer : "Worms W.M.D.exe", 0xF10384D;
@@ -39,206 +24,122 @@ state("Worms W.M.D") {
     // //      False when the CPU hotseat timer starts
     // //      True or false in the results page and main menu depending on who played last
     // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
+
+    // // Works but not needed atm
+    // string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
+    // string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
+    // string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
+    // string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
+    // string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
+
+    // // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
+    // byte paused : "Worms W.M.D.exe", 0x50C342A;
+
+    // // True when replaying
+    // bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
+
+    // // True when on the results page
+    // bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 }
 
 init {
-    // Whether a new level changing, used in split{}
-    vars.tmpMissionChanging = false;
-
-    // Whether the first hotset timer of a level has already triggered
-    vars.tmpFirstHotseatTimerTriggered = false;
-
-    // Whether the same level is restarting, used in isLoading{}
-    vars.tmpMissionIsRestarting = false;
+    // Whether the first hotset timer of a level is active
+    vars.firstHotseatTimerTriggered = false;
 
     // The initial timer for a mission
     vars.missionInitialTotalSeconds = 0;
 
     // Sum of seconds played on the same level, including restarts
-    vars.currentLevelTotalSecondsPlayed = 0;
+    vars.lastEnteredLevelTotalSecondsPlayed = 0;
+
+    // SOTT, sum of turn times
+    vars.sumOfTurnTimes = 0;
 
     // Seconds played since start or restart of a level
     vars.currentTimerSecondsRemaining = 0;
+
+    // Helper vars
+    vars.inGame = false;
+    vars.comingFromMainMenu = true;
 }
 
+// State management
 update {
-    vars.tmpFirstHotseatTimerTriggered = !current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
+    //// Order of the following conditions matters
 
-    // Detect restart of the same level
-    if (current.levelTimer < old.levelTimer && timer.CurrentTime.RealTime.Value.TotalSeconds != 0) {
-        // After a new level timer starts
-        vars.tmpMissionIsRestarting = true;
-        vars.currentLevelTotalSecondsPlayed += vars.currentTimerSecondsRemaining;
-    } else if (vars.tmpFirstHotseatTimerTriggered) {
-        // Wait until the first pre-timer starts
-        vars.tmpMissionIsRestarting = false;
+    if (current.levelTimer < old.levelTimer && vars.inGame) {
+        print("Current level restarted");
+
+        // Sum timers
+        vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
     }
+
+    // When the mission timer is visible and it just changed
+    if (current.displayedTimer != null && current.displayedTimer != old.displayedTimer) {
+        string[] splitDuration = current.displayedTimer.Split(':');
+        int minutes = Convert.ToInt32(splitDuration[0]);
+        int seconds = minutes * 60 + Convert.ToInt32(splitDuration[1]);
+        if (seconds > 0) {
+            print("Seconds: " + seconds);
+            vars.currentTimerSecondsRemaining = seconds;
+        }
+    }
+
+    if (vars.comingFromMainMenu && vars.currentTimerSecondsRemaining > 0) {
+        print("New level started");
+
+        // Init timers
+        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+
+        // Set state
+        vars.inGame = true;
+        vars.comingFromMainMenu = false;
+    }
+
+    vars.firstHotseatTimerTriggered = current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
 }
 
 start {
-    // Start after first pre-timer
-    if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered) {
-        vars.currentLevelTotalSecondsPlayed = 0;
-        vars.currentTimerSecondsRemaining = 0;
+    if (current.displayedTimer != null && vars.firstHotseatTimerTriggered) {
+        print("First level started");
 
+        // Init timers
         vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+
+        // Set state
+        vars.inGame = true;
+        vars.comingFromMainMenu = false;
 
         return true;
     }
 }
 
 split {
-    // Detect new level change
-    if (current.selectedTrainingMission != old.selectedTrainingMission
-        && (current.selectedTrainingMission.Contains("Basic")
-        || current.selectedTrainingMission.Contains("Training")
-        || current.selectedTrainingMission.Contains("Advanced"))
-        || current.selectedCampaignMission != old.selectedCampaignMission
-        || current.selectedChallengeMission != old.selectedChallengeMission
-        || current.selectedExtraMission != old.selectedExtraMission
-        || current.selectedBonusMission != old.selectedBonusMission) {
-        // After a new level is selected
-        vars.tmpMissionChanging = true;
-    } else if (vars.tmpMissionChanging && current.inGame) {
-        // Wait until the first pre-timer starts
-        vars.tmpMissionChanging = false;
+    if (!current.inGame && vars.inGame) {
+        print("Exited level, split");
+
+        // Sum timers
+        vars.sumOfTurnTimes += vars.lastEnteredLevelTotalSecondsPlayed
+                            + vars.missionInitialTotalSeconds
+                            - vars.currentTimerSecondsRemaining;
+
+        // Reset timers
+        vars.lastEnteredLevelTotalSecondsPlayed = 0;
+        vars.missionInitialTotalSeconds = 0;
+        vars.currentTimerSecondsRemaining = 0;
+
+        // Set state
+        vars.inGame = false;
+        vars.comingFromMainMenu = true;
+
         return true;
     }
 }
 
-onSplit {
-    vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
-    vars.tmpMissionIsRestarting = true;
-    vars.currentLevelTotalSecondsPlayed = 0;
-    vars.currentTimerSecondsRemaining = 0;
-}
-
-isLoading {
-    // Return true if the game is loading, replaying, paused or in a menu
-    return
-        !current.inGame // check if we are in game
-        || current.paused > 1 // 1 = inventory open, 2 = paused, 3 = inventory open and paused
-        || current.replay // check if we are playing an instant replay
-        || current.resultsPage // results page showed up
-        || vars.tmpMissionIsRestarting; // check if first hotseat timer hasn't started yet
-}
-
 gameTime {
-    if (current.displayedTimer != null && vars.tmpFirstHotseatTimerTriggered && vars.tmpMissionIsRestarting) {
-        string[] splitDuration = current.displayedTimer.Split(':');
-
-        int minutes = Convert.ToInt32(splitDuration[0]);
-        vars.currentTimerSecondsRemaining = minutes * 60 + Convert.ToInt32(splitDuration[1]);
-        print(vars.currentTimerSecondsRemaining);
-        return TimeSpan.FromSeconds(vars.currentLevelTotalSecondsPlayed + vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining);
-    }
-}
-
-startup {
-    // Add training missions to the settings (Edit Layout > Scriptable Autosplitter)
-    settings.Add("training_missions", true, "Training Missions");
-
-    settings.CurrentDefaultParent = "training_missions";
-    settings.Add("basic_training_missions", true, "Basic Training Missions");
-    settings.Add("pro_training_missions", true, "Pro Training Missions");
-
-    settings.CurrentDefaultParent = "basic_training_missions";
-    settings.Add("FE.Header.NavigationTraining", true, "Navigation");
-    settings.Add("FE.Header.BazookaBasicTraining", true, "Bazooka");
-    settings.Add("FE.Header.StaticGunBasic", true, "Gun Turret");
-    settings.Add("FE.Header.GrenadeBasicTraining", true, "Grenade");
-    settings.Add("FE.Header.TankTraining", true, "Tank");
-    settings.Add("FE.Header.ShotgunBasicTraining", true, "Shotgun");
-    settings.Add("FE.Header.MechTraining", true, "Mech");
-    settings.Add("FE.Header.Airstrike Training", true, "Airstrike");
-    settings.Add("FE.Header.HelicopterTraining", true, "Helicopter");
-    settings.Add("FE.Header.SheepTraining", true, "Sheep");
-
-    settings.CurrentDefaultParent = "pro_training_missions";
-    settings.Add("FE.Header.BazookaAdvancedTraining", true, "Pro: Bazooka");
-    settings.Add("FE.Header.ParachuteTraining", true, "Pro: Parachute");
-    settings.Add("FE.Header.StaticGunAdvanced", true, "Pro: Gun Turret");
-    settings.Add("FE.Header.JetPackTraining", true, "Pro: Jet Pack");
-    settings.Add("FE.Header.GrenadeAdvancedTraining", true, "Pro: Grenade");
-    settings.Add("FE.Header.HomingMissileTraining", true, "Pro: Homing Missile");
-    settings.Add("FE.Header.SuperSheepTraining", true, "Pro: Super Sheep");
-    settings.Add("FE.Header.SheepRopeTraining", true, "Pro: Sheep-On-A-Rope");
-    settings.Add("FE.Header.HHGTraining", true, "Pro: Holy Hand Grenade");
-    settings.Add("FE.Header.NinjaRopeTraining", true, "Pro: Ninja Rope");
-    settings.CurrentDefaultParent = null;
-
-    // Add campaign missions to the settings (Edit Layout > Scriptable Autosplitter)
-    settings.Add("campaign_missions", true, "Campaign Missions");
-
-    settings.CurrentDefaultParent = "campaign_missions";
-    settings.Add("FE.Header.Campaign1", true, "Church and Destroy");
-    settings.Add("FE.Header.Campaign2", true, "Building for Protection");
-    settings.Add("FE.Header.Campaign3", true, "Tanks for the Memories");
-    settings.Add("FE.Header.Campaign4", true, "Chopper Suey");
-    settings.Add("FE.Header.Campaign5", true, "Crème de la Kremlin");
-    settings.Add("FE.Header.Campaign6", true, "Tijuana Dance With Me?");
-    settings.Add("FE.Header.Campaign7", true, "Russian to the Crate");
-    settings.Add("FE.Header.Campaign8", true, "The States of Play");
-    settings.Add("FE.Header.Campaign9", true, "When Will I Siege You Again?");
-    settings.Add("FE.Header.Campaign10", true, "Rumble in the Jungle");
-    settings.Add("FE.Header.Campaign11", true, "Koo and the Gang");
-    settings.Add("FE.Header.Campaign12", true, "Temple Troubles");
-    settings.Add("FE.Header.Campaign13", true, "Juan Shot, Juan Kill");
-    settings.Add("FE.Header.Campaign14", true, "Fur the Win");
-    settings.Add("FE.Header.Campaign15", true, "The Banks of England");
-    settings.Add("FE.Header.Campaign16", true, "Don’t Believe the Snype");
-    settings.Add("FE.Header.Campaign17", true, "Keep Your Chinook");
-    settings.Add("FE.Header.Campaign18", true, "Enemy At the Crates");
-    settings.Add("FE.Header.Campaign19", true, "We’re Foo Yung To Die");
-    settings.Add("FE.Header.Campaign20", true, "Mount-A-Strike");
-    settings.Add("FE.Header.Campaign21", true, "Reach for the Tsars");
-    settings.Add("FE.Header.Campaign22", true, "Stormtroupers");
-    settings.Add("FE.Header.Campaign23", true, "The Crate Wall");
-    settings.Add("FE.Header.Campaign24", true, "Chip Chopper Disaster");
-    settings.Add("FE.Header.Campaign25", true, "You Got the Hanger This");
-    settings.Add("FE.Header.Campaign26", true, "Blockbuster");
-    settings.Add("FE.Header.Campaign27", true, "It’s Nacho’s Fault");
-    settings.Add("FE.Header.Campaign28", true, "The Legend of Ro Ping ");
-    settings.Add("FE.Header.Campaign29", true, "Crafty Cavern Capers");
-    settings.Add("FE.Header.Campaign30", true, "Tsarface");
-    settings.CurrentDefaultParent = null;
-
-    // Add challenge missions to the settings (Edit Layout > Scriptable Autosplitter)
-    settings.Add("challenge_missions", true, "Challenge Missions");
-
-    settings.CurrentDefaultParent = "challenge_missions";
-    settings.Add("FE.Header.Challenge01", true, "Jetpack to Work!");
-    settings.Add("FE.Header.Challenge02", true, "I'm gonna Mech you Mine");
-    settings.Add("FE.Header.Challenge03", true, "Don't be Greedy!");
-    settings.Add("FE.Header.Challenge04", true, "Assault and Battery");
-    settings.Add("FE.Header.Challenge05", true, "Sharpshooter");
-    settings.Add("FE.Header.Challenge06", true, "Blast Off!");
-    settings.Add("FE.Header.Challenge07", true, "Batter Up!");
-    settings.Add("FE.Header.Challenge08", true, "Mi Pun Chu");
-    settings.Add("FE.Header.Challenge09", true, "Tanked Up");
-    settings.Add("FE.Header.Challenge10", true, "Ice Spy");
-    settings.CurrentDefaultParent = null;
-
-    // Add extra missions to the settings (Edit Layout > Scriptable Autosplitter)
-    settings.Add("extra_missions", true, "Extra Missions");
-
-    settings.CurrentDefaultParent = "extra_missions";
-    settings.Add("FE.Header.Carentan1", true, "War of the Worms");
-    settings.Add("FE.Header.Carentan2", true, "Downfall");
-    settings.Add("FE.Header.Carentan3", true, "Château de Gâteau");
-    settings.Add("FE.Header.Carentan4", true, "Grieving Private Survivor");
-    settings.Add("FE.Header.Carentan5", true, "Final Fury");
-    settings.CurrentDefaultParent = null;
-
-    // Add bonus missions to the settings (Edit Layout > Scriptable Autosplitter)
-    settings.Add("bonus_missions", true, "Bonus Missions");
-
-    settings.CurrentDefaultParent = "bonus_missions";
-    settings.Add("FE.Header.Bonus01", true, "Cool As Ice");
-    settings.Add("FE.Header.Bonus02", true, "Operation Alcatraz");
-    settings.Add("FE.Header.Bonus03", true, "Steeple Jack");
-    settings.Add("FE.Header.Bonus04", true, "Sinking Icecaps");
-    settings.Add("FE.Header.Bonus05", true, "Countdown To Armaggeddon");
-    settings.Add("FE.Header.Bonus06", true, "Unturned");
-    settings.Add("FE.Header.Bonus07", true, "The Escapists");
+    return TimeSpan.FromSeconds(
+        vars.sumOfTurnTimes
+        + vars.lastEnteredLevelTotalSecondsPlayed
+        + vars.missionInitialTotalSeconds
+        - vars.currentTimerSecondsRemaining);
 }
