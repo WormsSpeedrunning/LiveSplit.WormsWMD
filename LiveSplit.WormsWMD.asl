@@ -16,32 +16,6 @@ state("Worms W.M.D") {
 
     // Current training mission name if selected
     string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
-
-    //// Graveyard
-
-    // Doesn't work for everyone
-    // // True when it's the current player's turn, but:
-    // //      Initially true in the menu
-    // //      False when loading the level
-    // //      True when the first hotseat timer starts
-    // //      False when the CPU hotseat timer starts
-    // //      True or false in the results page and main menu depending on who played last
-    // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
-
-    // // Works but not needed atm
-    // string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
-    // string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
-    // string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
-    // string17 selectedBonusMission : "Worms W.M.D.exe", 0x0F103548, 0xDC, 0x1BC, 0xDC, 0x1BC, 0xAAC;
-
-    // // 1 if inventory open, 2 if paused, 3 if both, 0 otherwise
-    // byte paused : "Worms W.M.D.exe", 0x50C342A;
-
-    // // True when replaying
-    // bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
-
-    // // True when on the results page
-    // bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 }
 
 init {
@@ -53,21 +27,15 @@ init {
 
     // Sum of seconds played on the same level, including restarts
     vars.lastEnteredLevelTotalSecondsPlayed = 0;
-
-    // Sum of seconds played on the same level, including restarts (training)
-    vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
+    vars.lastEnteredLevelTotalMillisecondsPlayed = 0;  // training
 
     // SOTT, sum of turn times
     vars.sumOfTurnTimes = 0;
-
-    // SOTT, sum of turn times with milliseconds (training))
-    vars.sumOfTurnTimesMs = 0;
+    vars.sumOfTurnTimesMs = 0;  // training
 
     // Seconds remaining since start or restart of a level
     vars.currentTimerSecondsRemaining = 0;
-
-    // Millisecondseconds played since start or restart of a level (training)
-    vars.currentTimerMilliseconds = 0;
+    vars.currentTimerMilliseconds = 0;  // training
 
     // Whether we need to handle milliseconds
     vars.isTraining = false;
