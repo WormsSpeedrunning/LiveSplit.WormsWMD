@@ -14,6 +14,9 @@ state("Worms W.M.D") {
     // Training time looks like mm:ss.ms
     string8 displayedTimer: "Worms W.M.D.exe", 0x0F103838, 0x2A8;
 
+    // Current training mission name if selected
+    string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
+
     //// Graveyard
 
     // Doesn't work for everyone
@@ -26,7 +29,6 @@ state("Worms W.M.D") {
     // bool playerTurn : "Worms W.M.D.exe", 0x0032593C, 0x0;
 
     // // Works but not needed atm
-    // string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
     // string20 selectedCampaignMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0x1BC, 0xAAC;
     // string21 selectedChallengeMission : "Worms W.M.D.exe", 0x0F10354C, 0xE0, 0xDC, 0x1BC, 0xD8, 0xD8, 0xAAC;
     // string19 selectedExtraMission : "Worms W.M.D.exe", 0x0F103548, 0x1BC, 0x1BC, 0x1BC, 0xAAC;
@@ -43,7 +45,7 @@ state("Worms W.M.D") {
 }
 
 init {
-    // Whether the first hotset timer of a level is active
+    // Whether the first hotseat timer of a level is active
     vars.firstHotseatTimerTriggered = false;
 
     // The initial timer for a mission
@@ -52,11 +54,23 @@ init {
     // Sum of seconds played on the same level, including restarts
     vars.lastEnteredLevelTotalSecondsPlayed = 0;
 
+    // Sum of seconds played on the same level, including restarts (training)
+    vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
+
     // SOTT, sum of turn times
     vars.sumOfTurnTimes = 0;
 
-    // Seconds played since start or restart of a level
+    // SOTT, sum of turn times with milliseconds (training))
+    vars.sumOfTurnTimesMs = 0;
+
+    // Seconds remaining since start or restart of a level
     vars.currentTimerSecondsRemaining = 0;
+
+    // Millisecondseconds played since start or restart of a level (training)
+    vars.currentTimerMilliseconds = 0;
+
+    // Whether we need to handle milliseconds
+    vars.isTraining = false;
 
     // Helper vars
     vars.inGame = false;
@@ -71,21 +85,44 @@ update {
         print("Current level restarted");
 
         // Sum timers
-        vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+        if (vars.isTraining) {
+            vars.lastEnteredLevelTotalMillisecondsPlayed += vars.currentTimerMilliseconds;
+        } else {
+            vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+        }
     }
 
     // When the mission timer is visible and it just changed
     if (current.displayedTimer != null && current.displayedTimer != old.displayedTimer) {
-        string[] splitDuration = current.displayedTimer.Split(':');
+        string displayedTimer = current.displayedTimer;
+        double milliseconds = -1;
+
+        if (displayedTimer.IndexOf('.') != -1 && (
+            current.selectedTrainingMission.Contains("Basic")
+            || current.selectedTrainingMission.Contains("Training")
+            || current.selectedTrainingMission.Contains("Advanced"))) {
+            vars.isTraining = true;
+            string[] splitDurationMs = displayedTimer.Split('.');
+            milliseconds = Convert.ToInt32(splitDurationMs[1]);
+            displayedTimer = splitDurationMs[0];
+        } else {
+            vars.isTraining = false;
+        }
+
+        string[] splitDuration = displayedTimer.Split(':');
         int minutes = Convert.ToInt32(splitDuration[0]);
         int seconds = minutes * 60 + Convert.ToInt32(splitDuration[1]);
-        if (seconds > 0) {
-            print("Seconds: " + seconds);
+
+        if (vars.isTraining && milliseconds != -1) {
+            milliseconds *= 10;
+            milliseconds += 1000 * seconds;
+            vars.currentTimerMilliseconds = milliseconds;
+        } else if (seconds > 0) {
             vars.currentTimerSecondsRemaining = seconds;
         }
     }
 
-    if (vars.comingFromMainMenu && vars.currentTimerSecondsRemaining > 0) {
+    if (vars.comingFromMainMenu && (vars.currentTimerSecondsRemaining > 0 || vars.currentTimerMilliseconds > 0)) {
         print("New level started");
 
         // Init timers
@@ -119,14 +156,21 @@ split {
         print("Exited level, split");
 
         // Sum timers
-        vars.sumOfTurnTimes += vars.lastEnteredLevelTotalSecondsPlayed
-                            + vars.missionInitialTotalSeconds
-                            - vars.currentTimerSecondsRemaining;
+        if (vars.isTraining) {
+            vars.sumOfTurnTimesMs += vars.lastEnteredLevelTotalMillisecondsPlayed
+                                  + vars.currentTimerMilliseconds;
+        } else {
+            vars.sumOfTurnTimes += vars.lastEnteredLevelTotalSecondsPlayed
+                                + vars.missionInitialTotalSeconds
+                                - vars.currentTimerSecondsRemaining;
+        }
 
         // Reset timers
-        vars.lastEnteredLevelTotalSecondsPlayed = 0;
         vars.missionInitialTotalSeconds = 0;
+        vars.lastEnteredLevelTotalSecondsPlayed = 0;
         vars.currentTimerSecondsRemaining = 0;
+        vars.currentTimerMilliseconds = 0;
+        vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
 
         // Set state
         vars.inGame = false;
@@ -137,6 +181,13 @@ split {
 }
 
 gameTime {
+    if (vars.isTraining) {
+        return TimeSpan.FromMilliseconds(
+            vars.sumOfTurnTimesMs
+            + vars.lastEnteredLevelTotalMillisecondsPlayed
+            + vars.currentTimerMilliseconds);
+    }
+
     return TimeSpan.FromSeconds(
         vars.sumOfTurnTimes
         + vars.lastEnteredLevelTotalSecondsPlayed

@@ -40,9 +40,11 @@ The layout and splits files are somewhat personal and meant to be created from s
 
 ### TODO:
 - [x] Pause the timer when the in game timer stops for example when taking damage or when the game ends
-- [ ] Handle milliseconds to make it work for training missions
+- [x] Handle milliseconds to make it work for training missions
 - [x] Detect last level end to stop the timer (currently having to enter a new level to trigger the last split)
 - [ ] Reset the timer to 0 when restarting the first level
+- [ ] Fix Bug: restarting a level sometimes substract a few seconds
+- [ ] Fix Bug: resetting a run sometimes keep the previous timer in memory
 
 #### Finetuning:
 - [x] Fix Bug: When exiting level the timer starts and stops for a second
