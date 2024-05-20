@@ -162,3 +162,8 @@ gameTime {
         + vars.missionInitialTotalSeconds
         - vars.currentTimerSecondsRemaining);
 }
+
+isLoading {
+    // Needed to prevent the timer from flashing (adding 0.01s) when paused
+    return true;
+}
