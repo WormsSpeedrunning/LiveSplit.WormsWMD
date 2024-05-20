@@ -45,6 +45,12 @@ init {
     vars.comingFromMainMenu = true;
 }
 
+onReset {
+    // Needed as init{} is entered on game launch only
+    vars.sumOfTurnTimes = 0;
+    vars.sumOfTurnTimesMs = 0;
+}
+
 // State management
 update {
     //// Order of the following conditions matters
@@ -94,7 +100,9 @@ update {
         print("New level started");
 
         // Init timers
-        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+        if (!vars.isTraining) {
+            vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+        }
 
         // Set state
         vars.inGame = true;
@@ -109,7 +117,9 @@ start {
         print("First level started");
 
         // Init timers
-        vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+        if (!vars.isTraining) {
+            vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
+        }
 
         // Set state
         vars.inGame = true;
@@ -123,22 +133,22 @@ split {
     if (!current.inGame && vars.inGame) {
         print("Exited level, split");
 
-        // Sum timers
+        // Sum & reset timers
         if (vars.isTraining) {
             vars.sumOfTurnTimesMs += vars.lastEnteredLevelTotalMillisecondsPlayed
                                   + vars.currentTimerMilliseconds;
+
+            vars.currentTimerMilliseconds = 0;
+            vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
         } else {
             vars.sumOfTurnTimes += vars.lastEnteredLevelTotalSecondsPlayed
                                 + vars.missionInitialTotalSeconds
                                 - vars.currentTimerSecondsRemaining;
-        }
 
-        // Reset timers
-        vars.missionInitialTotalSeconds = 0;
-        vars.lastEnteredLevelTotalSecondsPlayed = 0;
-        vars.currentTimerSecondsRemaining = 0;
-        vars.currentTimerMilliseconds = 0;
-        vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
+            vars.missionInitialTotalSeconds = 0;
+            vars.lastEnteredLevelTotalSecondsPlayed = 0;
+            vars.currentTimerSecondsRemaining = 0;
+        }
 
         // Set state
         vars.inGame = false;
