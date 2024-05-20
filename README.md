@@ -43,8 +43,9 @@ The layout and splits files are somewhat personal and meant to be created from s
 - [x] Handle milliseconds to make it work for training missions
 - [x] Detect last level end to stop the timer (currently having to enter a new level to trigger the last split)
 - [ ] Reset the timer to 0 when restarting the first level
-- [ ] Fix Bug: restarting a level sometimes substract a few seconds
-- [x] Fix Bug: resetting a run sometimes keep the previous timer in memory
+- [x] Fix Bug: restarting a level sometimes substract a few seconds
+  - [ ] Fix minor UI Bug: the fix above makes the timer flash quickly with the wrong time
+- [x] Fix Bug: resetting a run sometimes keeps the previous timer in memory
 
 #### Finetuning:
 - [x] Fix Bug: When exiting level the timer starts and stops for a second

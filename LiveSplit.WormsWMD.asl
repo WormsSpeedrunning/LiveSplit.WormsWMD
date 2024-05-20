@@ -37,6 +37,11 @@ init {
     vars.currentTimerSecondsRemaining = 0;
     vars.currentTimerMilliseconds = 0;  // training
 
+    // Bugfix #1: fixes restarting a level sometimes ignores the last game seconds
+    // This temp var keeps the last game timer in memory
+    vars.tmpPreviousTimerSecondsRemaining = 0;
+    vars.tmpPreviousTimerMilliseconds = 0;  // training
+
     // Whether we need to handle milliseconds
     vars.isTraining = false;
 
@@ -60,9 +65,19 @@ update {
 
         // Sum timers
         if (vars.isTraining) {
-            vars.lastEnteredLevelTotalMillisecondsPlayed += vars.currentTimerMilliseconds;
+            if (vars.currentTimerMilliseconds == 0) {
+                // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
+                vars.lastEnteredLevelTotalMillisecondsPlayed += vars.tmpPreviousTimerMilliseconds;
+            } else {
+                vars.lastEnteredLevelTotalMillisecondsPlayed += vars.currentTimerMilliseconds;
+            }
         } else {
-            vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+            if (vars.currentTimerSecondsRemaining == vars.missionInitialTotalSeconds) {
+                // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
+                vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.tmpPreviousTimerSecondsRemaining;
+            } else {
+                vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+            }
         }
     }
 
@@ -71,16 +86,15 @@ update {
         string displayedTimer = current.displayedTimer;
         double milliseconds = -1;
 
-        if (displayedTimer.IndexOf('.') != -1 && (
-            current.selectedTrainingMission.Contains("Basic")
-            || current.selectedTrainingMission.Contains("Training")
-            || current.selectedTrainingMission.Contains("Advanced"))) {
-            vars.isTraining = true;
+        vars.isTraining = displayedTimer.IndexOf('.') != -1 && (
+            current.selectedTrainingMission.Contains("Basic") ||
+            current.selectedTrainingMission.Contains("Training") ||
+            current.selectedTrainingMission.Contains("Advanced"));
+
+        if (vars.isTraining) {
             string[] splitDurationMs = displayedTimer.Split('.');
             milliseconds = Convert.ToInt32(splitDurationMs[1]);
             displayedTimer = splitDurationMs[0];
-        } else {
-            vars.isTraining = false;
         }
 
         string[] splitDuration = displayedTimer.Split(':');
@@ -90,8 +104,10 @@ update {
         if (vars.isTraining && milliseconds != -1) {
             milliseconds *= 10;
             milliseconds += 1000 * seconds;
+            vars.tmpPreviousTimerMilliseconds = vars.currentTimerMilliseconds;  // bugfix #1: keep previous timer value
             vars.currentTimerMilliseconds = milliseconds;
         } else if (seconds > 0) {
+            vars.tmpPreviousTimerSecondsRemaining = vars.currentTimerSecondsRemaining;  // bugfix #1: keep previous timer value
             vars.currentTimerSecondsRemaining = seconds;
         }
     }
