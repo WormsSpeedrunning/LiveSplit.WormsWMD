@@ -17,18 +17,10 @@ The layout and splits files are somewhat personal and meant to be created from s
     - import from a URL
 
 ## Installation
-  1. Go to the [releases](https://github.com/stephanebruckert/LiveSplit.WormsWMD/releases/) page and download the `Worms-WMD-Autosplitter-<version>.zip` from the latest release
-  2. Extract the archive into your desired location
-  3. Open up [LiveSplit](https://livesplit.org/)
-  4. Right click on the timer
-  5. Click on `Edit Layout`
-  6. Click on the `+` icon
-  7. `Control > Scriptable Auto Splitter`
-  8. Double click on the `Scriptable Auto Splitter` component
-  9. Click browse and select the `.asl` file from the extracted folder (step 2)
-  10. Select the missions you want
-  11. Create or download the splits (`Right click on the timer > Edit Splits`), You can also copy and paste the levels from [here](https://docs.google.com/spreadsheets/d/1wLOU4FbLXlK7e3cd_i5Iwp5cv3UWQyyUSuk-VmZqfHk/edit?usp=sharing)
-  12. Done. You should now be able to open up a level and the timer should automatically start
+  1. Open up LiveSplit
+  2. Go to `Edit Layout` 
+  3. Select Worms W.M.D as the game
+  4. You should now be able to select an autosplitter
 
 ## Rules
 
@@ -39,16 +31,9 @@ The layout and splits files are somewhat personal and meant to be created from s
   - need to be careful not to enter the same level twice
 
 ### TODO:
-- [x] Pause the timer when the in game timer stops for example when taking damage or when the game ends
-- [x] Handle milliseconds to make it work for training missions
-- [x] Detect last level end to stop the timer (currently having to enter a new level to trigger the last split)
 - [ ] Reset the timer to 0 when restarting the first level
-- [x] Fix Bug: restarting a level sometimes substract a few seconds
   - [ ] Fix minor UI Bug: the fix above makes the timer flash quickly with the wrong time
-- [x] Fix Bug: resetting a run sometimes keeps the previous timer in memory
 
-#### Finetuning:
-- [x] Fix Bug: When exiting level the timer starts and stops for a second
 
 ## Development
 
