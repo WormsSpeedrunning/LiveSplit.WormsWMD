@@ -16,6 +16,9 @@ state("Worms W.M.D") {
 
     // Current training mission name if selected
     string33 selectedTrainingMission : "Worms W.M.D.exe", 0x0F103540, 0xE8, 0x1C0, 0xDC, 0xAAC;
+
+    // True when replaying
+    bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
 }
 
 init {
@@ -68,7 +71,8 @@ onReset {
 update {
     //// Order of the following conditions matters
 
-    if (current.levelTimer < old.levelTimer && vars.inGame) {
+    if (current.levelTimer < old.levelTimer && vars.inGame
+            && !current.replay) {  // fixes bug where game replay triggers a restart)
         print("Current level restarted");
 
         if (vars.isFirstLevel) {
