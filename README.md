@@ -18,7 +18,7 @@ The layout and splits files are somewhat personal and meant to be created from s
 
 ## Installation
   1. Open up LiveSplit
-  2. Go to `Edit Layout` 
+  2. Go to `Edit Layout`
   3. Select Worms W.M.D as the game
   4. You should now be able to select an autosplitter
 
@@ -29,17 +29,17 @@ The layout and splits files are somewhat personal and meant to be created from s
 - Going back to the main menu triggers a split, this means:
   - starting a mission requires to finish it successfully
   - need to be careful not to enter the same level twice
+- Restarting the first level resets the full run timer
 
 ### TODO:
-- [ ] Reset the timer to 0 when restarting the first level
+- [x] Fix Bug: restarting a level sometimes substract a few seconds
   - [ ] Fix minor UI Bug: the fix above makes the timer flash quickly with the wrong time
-
 
 ## Development
 
 ### Import
 
-Can be manually imported via the `Scriptable Auto Splitter` component on your layout. (look [Installation](#installation))
+Can be manually imported via the `Scriptable Auto Splitter` component on your layout.
 
 ### Changes
 

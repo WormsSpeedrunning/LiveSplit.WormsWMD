@@ -48,6 +48,14 @@ init {
     // Helper vars
     vars.inGame = false;
     vars.comingFromMainMenu = true;
+    vars.isFirstLevel = true;
+    vars.shouldReset = false;
+}
+
+reset {
+    if (vars.shouldReset) {
+        return true;
+    }
 }
 
 onReset {
@@ -63,26 +71,30 @@ update {
     if (current.levelTimer < old.levelTimer && vars.inGame) {
         print("Current level restarted");
 
-        // Sum timers
-        if (vars.isTraining) {
-            if (vars.currentTimerMilliseconds == 0) {
-                // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
-                vars.lastEnteredLevelTotalMillisecondsPlayed += vars.tmpPreviousTimerMilliseconds;
-            } else {
-                vars.lastEnteredLevelTotalMillisecondsPlayed += vars.currentTimerMilliseconds;
-            }
+        if (vars.isFirstLevel) {
+            vars.shouldReset = true;
         } else {
-            if (vars.currentTimerSecondsRemaining == vars.missionInitialTotalSeconds) {
-                // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
-                vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.tmpPreviousTimerSecondsRemaining;
+            // Sum timers
+            if (vars.isTraining) {
+                if (vars.currentTimerMilliseconds == 0) {
+                    // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
+                    vars.lastEnteredLevelTotalMillisecondsPlayed += vars.tmpPreviousTimerMilliseconds;
+                } else {
+                    vars.lastEnteredLevelTotalMillisecondsPlayed += vars.currentTimerMilliseconds;
+                }
             } else {
-                vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+                if (vars.currentTimerSecondsRemaining == vars.missionInitialTotalSeconds) {
+                    // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
+                    vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.tmpPreviousTimerSecondsRemaining;
+                } else {
+                    vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
+                }
             }
         }
     }
 
     // When the mission timer is visible and it just changed
-    if (current.displayedTimer != null && current.displayedTimer != old.displayedTimer) {
+    if (current.displayedTimer != null && current.displayedTimer != old.displayedTimer || vars.shouldReset) {
         string displayedTimer = current.displayedTimer;
         double milliseconds = -1;
 
@@ -115,7 +127,7 @@ update {
     if (vars.comingFromMainMenu && (vars.currentTimerSecondsRemaining > 0 || vars.currentTimerMilliseconds > 0)) {
         print("New level started");
 
-        // Init timers
+        // Init timer
         if (!vars.isTraining) {
             vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
         }
@@ -123,6 +135,7 @@ update {
         // Set state
         vars.inGame = true;
         vars.comingFromMainMenu = false;
+        vars.isFirstLevel = false;
     }
 
     vars.firstHotseatTimerTriggered = current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
@@ -132,14 +145,17 @@ start {
     if (current.displayedTimer != null && vars.firstHotseatTimerTriggered) {
         print("First level started");
 
-        // Init timers
-        if (!vars.isTraining) {
+        if (vars.shouldReset) {
+            vars.shouldReset = false;
+        } else if (!vars.isTraining) {
+            // Init timer
             vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
         }
 
         // Set state
         vars.inGame = true;
         vars.comingFromMainMenu = false;
+        vars.isFirstLevel = true;
 
         return true;
     }
