@@ -26,7 +26,7 @@ The layout and splits files are somewhat personal and meant to be created from s
 ## Requirements
 
 - To be displayed correctly, Game Time needs to be selected in the Splits and Timer components of the LiveSplit layout
-- Levels or run categories are not part of the script and need to be set in the LiveSplit splits
+- Levels or run categories are not part of the script and need to be set in the LiveSplit splits. You can copy the missions from [here][missions-url].
 
 ## Rules
 
@@ -75,4 +75,5 @@ To view errors, use Event Viewer already on Windows.
 [issues-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/issues
 [license-shield]: https://img.shields.io/github/license/stephanebruckert/LiveSplit.WormsWMD
 [license-url]: https://github.com/stephanebruckert/LiveSplit.WormsWMD/blob/master/LICENSE
+[missions-url]: https://docs.google.com/spreadsheets/d/1wLOU4FbLXlK7e3cd_i5Iwp5cv3UWQyyUSuk-VmZqfHk/edit
 
