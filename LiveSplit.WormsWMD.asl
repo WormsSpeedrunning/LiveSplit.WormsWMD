@@ -71,6 +71,11 @@ onReset {
 update {
     //// Order of the following conditions matters
 
+    if (current.replay) {
+        // Fixes bug where timer would show replay time
+        return false;
+    }
+
     if (current.levelTimer < old.levelTimer && vars.inGame
             && !current.replay) {  // fixes bug where game replay triggers a restart)
         print("Current level restarted");
