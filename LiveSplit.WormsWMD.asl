@@ -1,8 +1,5 @@
 // Define the executable and variables
 state("Worms W.M.D") {
-    // False in main menu, True otherwise (in game, paused, results)
-    bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
-
     // Game is loading (true between the menu and game music playing)
     bool loading : "Worms W.M.D.exe", 0xE0FBA12;
 
@@ -22,6 +19,9 @@ state("Worms W.M.D") {
 
     // True when replaying
     bool replay : "Worms W.M.D.exe", 0x00415D8C, 0x0;
+
+    // True when on the results page
+    bool resultsPage : "Worms W.M.D.exe", 0xF10388D;
 }
 
 init {
@@ -174,7 +174,7 @@ start {
 }
 
 split {
-    if (!current.inGame && vars.inGame) {
+    if (current.resultsPage && vars.inGame) {
         print("Exited level, split");
 
         // Sum & reset timers
