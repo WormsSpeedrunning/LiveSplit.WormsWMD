@@ -3,6 +3,9 @@ state("Worms W.M.D") {
     // False in main menu, True otherwise (in game, paused, results)
     bool inGame : "Worms W.M.D.exe", 0x0011E7A8, 0x0;
 
+    // Game is loading (true between the menu and game music playing)
+    bool loading : "Worms W.M.D.exe", 0xE0FBA12;
+
     // Only true when player's turn hotseat timer
     bool playerHotseatTimer : "Worms W.M.D.exe", 0xF10384D;
 
@@ -207,14 +210,18 @@ gameTime {
             + vars.currentTimerMilliseconds);
     }
 
-    return TimeSpan.FromSeconds(
-        vars.sumOfTurnTimes
-        + vars.lastEnteredLevelTotalSecondsPlayed
-        + vars.missionInitialTotalSeconds
-        - vars.currentTimerSecondsRemaining);
+    // return TimeSpan.FromSeconds(
+    //     vars.sumOfTurnTimes
+    //     + vars.lastEnteredLevelTotalSecondsPlayed
+    //     + vars.missionInitialTotalSeconds
+    //     - vars.currentTimerSecondsRemaining);
 }
 
 isLoading {
-    // Needed to prevent the timer from flashing (adding 0.01s) when paused
-    return true;
+    if (vars.isTraining) {
+        // Needed to prevent the timer from flashing (adding 0.01s) when paused
+        return true;
+    }
+
+    return current.loading;
 }
