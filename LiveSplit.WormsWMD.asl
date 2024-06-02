@@ -28,28 +28,14 @@ init {
     // Whether the first hotseat timer of a level is active
     vars.firstHotseatTimerTriggered = false;
 
-    // The initial timer for a mission
-    vars.missionInitialTotalSeconds = 0;
-
-    // Sum of seconds played on the same level, including restarts
-    vars.lastEnteredLevelTotalSecondsPlayed = 0;
-    vars.lastEnteredLevelTotalMillisecondsPlayed = 0;  // training
-
-    // SOTT, sum of turn times
-    vars.sumOfTurnTimes = 0;
-    vars.sumOfTurnTimesMs = 0;  // training
-
-    // Seconds remaining since start or restart of a level
-    vars.currentTimerSecondsRemaining = 0;
-    vars.currentTimerMilliseconds = 0;  // training
-
-    // Bugfix #1: fixes restarting a level sometimes ignores the last game seconds
-    // This temp var keeps the last game timer in memory
-    vars.tmpPreviousTimerSecondsRemaining = 0;
-    vars.tmpPreviousTimerMilliseconds = 0;  // training
-
-    // Whether we need to handle milliseconds
-    vars.isTraining = false;
+    // Training
+    vars.isTraining = false;  // whether we need to handle milliseconds
+    vars.lastEnteredLevelTotalMillisecondsPlayed = 0;  // sum of seconds played on the same level, including restarts
+    vars.sumOfTurnTimesMs = 0;  // SOTT, sum of turn times
+    vars.currentTimerMilliseconds = 0;  // seconds remaining since start or restart of a level
+    // bugfix #1: fixes restarting a level sometimes ignores the last game seconds.
+    // this temp var keeps the last game timer in memory
+    vars.tmpPreviousTimerMilliseconds = 0;
 
     // Helper vars
     vars.inGame = false;
@@ -66,7 +52,6 @@ reset {
 
 onReset {
     // Needed as init{} is entered on game launch only
-    vars.sumOfTurnTimes = 0;
     vars.sumOfTurnTimesMs = 0;
 }
 
@@ -93,13 +78,6 @@ update {
                     vars.lastEnteredLevelTotalMillisecondsPlayed += vars.tmpPreviousTimerMilliseconds;
                 } else {
                     vars.lastEnteredLevelTotalMillisecondsPlayed += vars.currentTimerMilliseconds;
-                }
-            } else {
-                if (vars.currentTimerSecondsRemaining == vars.missionInitialTotalSeconds) {
-                    // For bugfix #1: use previous timer value when occasionally the previous game timer already reset to 0
-                    vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.tmpPreviousTimerSecondsRemaining;
-                } else {
-                    vars.lastEnteredLevelTotalSecondsPlayed += vars.missionInitialTotalSeconds - vars.currentTimerSecondsRemaining;
                 }
             }
         }
@@ -130,19 +108,11 @@ update {
             milliseconds += 1000 * seconds;
             vars.tmpPreviousTimerMilliseconds = vars.currentTimerMilliseconds;  // bugfix #1: keep previous timer value
             vars.currentTimerMilliseconds = milliseconds;
-        } else if (seconds > 0) {
-            vars.tmpPreviousTimerSecondsRemaining = vars.currentTimerSecondsRemaining;  // bugfix #1: keep previous timer value
-            vars.currentTimerSecondsRemaining = seconds;
         }
     }
 
-    if (vars.comingFromMainMenu && (vars.currentTimerSecondsRemaining > 0 || vars.currentTimerMilliseconds > 0)) {
+    if (vars.comingFromMainMenu && vars.currentTimerMilliseconds > 0) {
         print("New level started");
-
-        // Init timer
-        if (!vars.isTraining) {
-            vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
-        }
 
         // Set state
         vars.inGame = true;
@@ -159,9 +129,6 @@ start {
 
         if (vars.shouldReset) {
             vars.shouldReset = false;
-        } else if (!vars.isTraining) {
-            // Init timer
-            vars.missionInitialTotalSeconds = vars.currentTimerSecondsRemaining;
         }
 
         // Set state
@@ -184,14 +151,6 @@ split {
 
             vars.currentTimerMilliseconds = 0;
             vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
-        } else {
-            vars.sumOfTurnTimes += vars.lastEnteredLevelTotalSecondsPlayed
-                                + vars.missionInitialTotalSeconds
-                                - vars.currentTimerSecondsRemaining;
-
-            vars.missionInitialTotalSeconds = 0;
-            vars.lastEnteredLevelTotalSecondsPlayed = 0;
-            vars.currentTimerSecondsRemaining = 0;
         }
 
         // Set state
@@ -209,12 +168,6 @@ gameTime {
             + vars.lastEnteredLevelTotalMillisecondsPlayed
             + vars.currentTimerMilliseconds);
     }
-
-    // return TimeSpan.FromSeconds(
-    //     vars.sumOfTurnTimes
-    //     + vars.lastEnteredLevelTotalSecondsPlayed
-    //     + vars.missionInitialTotalSeconds
-    //     - vars.currentTimerSecondsRemaining);
 }
 
 isLoading {
