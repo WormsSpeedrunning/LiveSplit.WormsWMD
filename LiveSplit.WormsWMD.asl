@@ -32,10 +32,13 @@ init {
     vars.isTraining = false;  // whether we need to handle milliseconds
     vars.lastEnteredLevelTotalMillisecondsPlayed = 0;  // sum of seconds played on the same level, including restarts
     vars.sumOfTurnTimesMs = 0;  // SOTT, sum of turn times
-    vars.currentTimerMilliseconds = 0;  // seconds remaining since start or restart of a level
+    vars.currentTimerMilliseconds = 0;  // milliseconds elapsed since start or restart of a level
     // bugfix #1: fixes restarting a level sometimes ignores the last game seconds.
     // this temp var keeps the last game timer in memory
     vars.tmpPreviousTimerMilliseconds = 0;
+
+    // Campaign
+    vars.currentTimerSecondsRemaining = 0; // seconds remaining since start or restart of a level
 
     // Helper vars
     vars.inGame = false;
@@ -108,10 +111,12 @@ update {
             milliseconds += 1000 * seconds;
             vars.tmpPreviousTimerMilliseconds = vars.currentTimerMilliseconds;  // bugfix #1: keep previous timer value
             vars.currentTimerMilliseconds = milliseconds;
+        } else if (seconds > 0) {
+            vars.currentTimerSecondsRemaining = seconds;
         }
     }
 
-    if (vars.comingFromMainMenu && vars.currentTimerMilliseconds > 0) {
+    if (vars.comingFromMainMenu && (vars.currentTimerSecondsRemaining > 0 || vars.currentTimerMilliseconds > 0)) {
         print("New level started");
 
         // Set state
@@ -151,6 +156,8 @@ split {
 
             vars.currentTimerMilliseconds = 0;
             vars.lastEnteredLevelTotalMillisecondsPlayed = 0;
+        } else {
+            vars.currentTimerSecondsRemaining = 0;
         }
 
         // Set state
