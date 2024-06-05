@@ -26,7 +26,7 @@ state("Worms W.M.D") {
 
 init {
     // Whether the first hotseat timer of a level is active
-    vars.firstHotseatTimerTriggered = false;
+    vars.firstHotseatTimerEnded = false;
 
     // Training
     vars.isTraining = false;  // whether we need to handle milliseconds
@@ -125,11 +125,11 @@ update {
         vars.isFirstLevel = false;
     }
 
-    vars.firstHotseatTimerTriggered = current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
+    vars.firstHotseatTimerEnded = !current.playerHotseatTimer && current.playerHotseatTimer != old.playerHotseatTimer;
 }
 
 start {
-    if (current.displayedTimer != null && vars.firstHotseatTimerTriggered) {
+    if (current.displayedTimer != null && vars.firstHotseatTimerEnded) {
         print("First level started");
 
         if (vars.shouldReset) {

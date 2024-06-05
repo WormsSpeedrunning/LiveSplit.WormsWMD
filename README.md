@@ -30,18 +30,14 @@ The layout and splits files are somewhat personal and meant to be created from s
 
 ## Rules
 
-- Timers start:
-  - Game Time starts when first mission timer starts
-  - Real Time starts when first hotseat timer starts
+- Timers starts when first mission timer starts
 - Missions can be played in any order
 - Restarting is allowed, the previous attempt game time will be counted
-- Going back to the main menu triggers a split, this means:
-  - starting a mission requires to finish it successfully
-  - need to be careful not to enter the same level twice
 - Restarting the first level resets all timers
+- Split is done when the mission results appear
 - Timer ends:
   - Game Time ends when last mission timer ends
-  - Real Time ends when the last split happens, that is when back in the main menu from the last mission
+  - Real Time ends when the last split happens
 
 ### TODO:
 
