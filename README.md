@@ -70,6 +70,6 @@ To view errors, use Event Viewer already on Windows.
 [issues-shield]: https://img.shields.io/github/issues/WormsSpeedrunning/LiveSplit.WormsWMD.svg
 [issues-url]: https://github.com/WormsSpeedrunning/LiveSplit.WormsWMD/issues
 [license-shield]: https://img.shields.io/github/license/WormsSpeedrunning/LiveSplit.WormsWMD
-[license-url]: https://github.com/WormsSpeedrunning/LiveSplit.WormsWMD/blob/master/LICENSE
+[license-url]: /LICENSE
 [missions-url]: https://docs.google.com/spreadsheets/d/1wLOU4FbLXlK7e3cd_i5Iwp5cv3UWQyyUSuk-VmZqfHk/edit
 
