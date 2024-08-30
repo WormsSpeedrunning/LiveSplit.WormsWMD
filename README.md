@@ -28,8 +28,8 @@ The layout and splits files are somewhat personal and meant to be created from s
 
 Categories are automatically detected and will set the timing method accordingly:
 
-- For training levels: Game Time only counts the in-game timers
-- For campaign levels: Real Time removes level loading times
+- For training levels: Game Time only counts the in-game timers (LRT does not work for training runs, at least for now.)
+- For campaign levels: Real Time removes level loading times (LRT)
 
 The splitter also works for single level runs, as long as only one level is set in the Splits Editor.
 
